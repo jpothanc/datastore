@@ -1,0 +1,6 @@
+Todo
+- Tests
+- Wire up Odbc database
+- Schedules and Warmup
+- Indexing
+- Async
