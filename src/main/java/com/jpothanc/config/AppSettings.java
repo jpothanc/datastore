@@ -37,6 +37,16 @@ public class AppSettings {
 
     public CatalogueItem getCatalogueItem(String catalogue, String catalogueItem) throws NoSuchElementException {
         var key = CatalogueHelper.getCatalogueKey(catalogue,catalogueItem);
-        return catalogueItems.get(key);
+
+        CatalogueItem clone = null;
+        try {
+            var cItem = catalogueItems.get(key);
+            if(cItem != null) {
+                clone = (CatalogueItem)cItem.clone();
+            }
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+        return clone;
     }
 }

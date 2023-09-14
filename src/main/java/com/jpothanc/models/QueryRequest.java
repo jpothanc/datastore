@@ -14,5 +14,4 @@ public class QueryRequest {
     private boolean skipCache;
     private boolean cancel;
     private String clientIdentifier;
-
 }

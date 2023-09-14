@@ -7,16 +7,22 @@ import java.util.Objects;
 
 import static com.jpothanc.helpers.Constants.QUERY_TYPE_REST;
 
-public class CatalogueItem {
+public class CatalogueItem implements Cloneable{
     private String key;
     private String datasource;
     private String query;
     private boolean preload;
     private String indexes;
     private String health;
+
+    private String[] queryArgs;
     @Override
     public int hashCode() {
         return Objects.hash(key, query,datasource);
+    }
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     public String getCacheKey(String type){
@@ -74,5 +80,13 @@ public class CatalogueItem {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String[] getQueryArgs() {
+        return queryArgs;
+    }
+
+    public void setQueryArgs(String[] queryArgs) {
+        this.queryArgs = queryArgs;
     }
 }

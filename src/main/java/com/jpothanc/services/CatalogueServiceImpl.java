@@ -37,6 +37,11 @@ public class CatalogueServiceImpl implements CatalogueService {
         if (catalogueItem == null)
             throw new NoSuchElementException(CATALOGUE_NOT_FOUND);
 
+        if(catalogueItem.getQueryArgs() != null && catalogueItem.getQueryArgs().length > 0) {
+            var query = String.format(catalogueItem.getQuery(),catalogueItem.getQueryArgs());
+            catalogueItem.setQuery(query);
+        }
+
         var provider = providerFactory.getCatalogueProvider(request);
         return request.isSkipCache() ?
                 getResponse(catalogueItem, () -> provider.get().queryCatalogueItem(request)) :

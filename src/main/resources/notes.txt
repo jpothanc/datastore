@@ -1,5 +1,5 @@
 Todo
-- Tests
+- Tests - Done
 - Wire up Odbc database
 - Schedules and Warmup
 - Indexing
