@@ -2,7 +2,7 @@ package com.jpothanc.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.gson.JsonObject;
-import com.jpothanc.helpers.CatalogueHelper;
+import com.jpothanc.helpers.Constants;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -10,12 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.jpothanc.helpers.CatalogueHelper.*;
+import static com.jpothanc.helpers.Constants.*;
 
-//@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
 @ToString
@@ -26,32 +26,34 @@ public class QueryResponse {
     private int records;
     private String statusCode;
     private List<JsonObject> result;
-    public boolean hasValue(){
+    private String source;
+    private String cacheKey;
+
+    public boolean hasValue() {
         return result != null;
     }
 
-    public static QueryResponse createOkRespose(QueryRequest request){
-        var okRes = new QueryResponse();
-        okRes.setStatusCode(HttpStatus.OK.toString());
-        okRes.setCatalogueItem(getCatalogueKey(request));
-        okRes.setTimeStamp(formattedTimeStamp());
-       return  okRes;
+    public static QueryResponse createOkResponse(QueryRequest request) {
+        return generateResponse(request, "", HttpStatus.OK);
     }
 
-    public static ResponseEntity<QueryResponse> notFound(String catalogueKey, String errorMessage, HttpStatusCode statusCode){
+    public static ResponseEntity<QueryResponse> notFound(QueryRequest request, String errorMessage, HttpStatusCode statusCode) {
 
-        return new ResponseEntity<>(generateResponse(catalogueKey,errorMessage,HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(generateResponse(request, errorMessage, HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
     }
-    public static ResponseEntity<QueryResponse> badRequest(String catalogueKey, String errorMessage,HttpStatusCode statusCode){
 
-        return new ResponseEntity<>(generateResponse(catalogueKey,errorMessage,HttpStatus.BAD_REQUEST), HttpStatus.NOT_FOUND);
+    public static ResponseEntity<QueryResponse> badRequest(QueryRequest request, String errorMessage, HttpStatusCode statusCode) {
+
+        return new ResponseEntity<>(generateResponse(request, errorMessage, HttpStatus.BAD_REQUEST), HttpStatus.NOT_FOUND);
     }
-    private static QueryResponse generateResponse(String catalogueKey, String errorMessage, HttpStatusCode statusCode) {
+
+    private static QueryResponse generateResponse(QueryRequest request, String errorMessage, HttpStatusCode statusCode) {
         var response = new QueryResponse();
-        response.setCatalogueItem(catalogueKey);
+        response.setCatalogueItem(getCatalogueKey(request));
         response.setError(errorMessage);
         response.setStatusCode(statusCode.toString());
         response.setTimeStamp(formattedTimeStamp());
+        response.setSource(CATALOGUE_SOURCE_QUERY);
         return response;
     }
 }

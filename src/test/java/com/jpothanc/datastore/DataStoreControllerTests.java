@@ -11,15 +11,11 @@ package com.jpothanc.datastore;
 //@Disabled	Method or class annotated with this is disabled and will not be executed as part of the test suite.
 //        These annotations provide control over the execution order and behavior of your JUnit 5 test methods and allow you to set up and tear down resources, perform setup tasks, and organize your tests effectively.
 
-
-import com.jpothanc.helpers.CatalogueHelper;
 import com.jpothanc.models.QueryRequest;
 import com.jpothanc.models.QueryResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,22 +24,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import java.util.stream.Stream;
-
 import static com.jpothanc.helpers.CatalogueHelper.getCatalogueKey;
-import static org.assertj.core.api.FactoryBasedNavigableListAssert.assertThat;
+import static com.jpothanc.helpers.Constants.CATALOGUE_SOURCE_CACHED;
+import static com.jpothanc.helpers.Constants.CATALOGUE_SOURCE_QUERY;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.result.StatusResultMatchersExtensionsKt.isEqualTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-//@WebFluxTest
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@SpringBootTest
-//@AutoConfigureWebTestClient
-//@ExtendWith(SpringExtension.class)
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-//@SpringBootTest
 class DataStoreControllerTests extends BaseTest{
 
 
@@ -70,6 +57,7 @@ class DataStoreControllerTests extends BaseTest{
     @MethodSource("getValidQueryRequest")
     public void when_CatalogueItemIsQueried_ShouldReturnValidQueryResponse(QueryRequest request) {
         var api = String.format(DATASTORE_API, request.getCatalogue(), request.getCatalogueItem());
+        var cacheKey = getCatalogueItem(request).getCacheKey();
         webTestClient.get()
                 .uri(api)
                 .accept(MediaType.APPLICATION_JSON)
@@ -83,6 +71,7 @@ class DataStoreControllerTests extends BaseTest{
                     assertEquals(res.getCatalogueItem(), getCatalogueKey(request));
                     assertNotNull(res);
                     assertNotNull(res.getResult());
+                    assertEquals(res.getCacheKey(), cacheKey);
                 });
     }
     @ParameterizedTest
@@ -104,6 +93,29 @@ class DataStoreControllerTests extends BaseTest{
                 });
     }
 
+    @Test
+      public void when_CatalogueItemIsQueriedTwice_ShouldReturnSourceAsCachedOnSecondCall() {
+        var request = getQueryRequest();
+        var api = String.format(DATASTORE_API, request.getCatalogue(), request.getCatalogueItem());
 
+        webTestClient.get()
+                .uri(api)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(QueryResponse.class)
+                .consumeWith(response -> {
+                    QueryResponse res = response.getResponseBody();
+                    assertEquals(res.getSource(), CATALOGUE_SOURCE_QUERY);
+                });
 
+        webTestClient.get()
+                .uri(api)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(QueryResponse.class)
+                .consumeWith(response -> {
+                    QueryResponse res = response.getResponseBody();
+                    assertEquals(res.getSource(), CATALOGUE_SOURCE_CACHED);
+                });
+    }
 }

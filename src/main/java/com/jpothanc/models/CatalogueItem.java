@@ -1,6 +1,12 @@
 package com.jpothanc.models;
 
 
+import com.jpothanc.helpers.CatalogueHelper;
+
+import java.util.Objects;
+
+import static com.jpothanc.helpers.Constants.QUERY_TYPE_REST;
+
 public class CatalogueItem {
     private String key;
     private String datasource;
@@ -8,6 +14,19 @@ public class CatalogueItem {
     private boolean preload;
     private String indexes;
     private String health;
+    @Override
+    public int hashCode() {
+        return Objects.hash(key, query,datasource);
+    }
+
+    public String getCacheKey(String type){
+        return new StringBuilder(key).append(type).append(hashCode()).toString();
+    }
+    public String getCacheKey(){
+
+        //return new StringBuilder(key).append(QUERY_TYPE_REST).append(hashCode()).toString();
+        return CatalogueHelper.generateCacheKey(key,QUERY_TYPE_REST,hashCode());
+    }
 
     public String getDatasource() {
         return datasource;

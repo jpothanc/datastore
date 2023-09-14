@@ -23,18 +23,6 @@ import static com.jpothanc.helpers.CatalogueHelper.*;
 public class DataController {
     @Autowired
     CatalogueService catalogueService;
-
-    @GetMapping("/async")
-    public CompletableFuture<ResponseEntity<String>> performAsyncOperation() {
-        // Simulate an asynchronous operation
-        CompletableFuture<ResponseEntity<String>> future = CompletableFuture.supplyAsync(() -> {
-            // Your asynchronous logic here
-            String result = "Async operation completed";
-            return ResponseEntity.ok(result);
-        });
-
-        return future;
-    }
     @GetMapping("/")
     public Mono<ResponseEntity<String>> get() throws ExecutionException, InterruptedException {
 
@@ -42,17 +30,16 @@ public class DataController {
     }
     @GetMapping("/query")
     public Mono<ResponseEntity<QueryResponse>> getCatalogueItem(@ModelAttribute QueryRequest request) {
-        var catalogueKey = getCatalogueKey(request);
 
         try {
             var response = catalogueService.queryCatalogueItem(request).join();
             return Mono.just(ResponseEntity.ok(response));
 
         } catch (NoSuchElementException e) {
-            return Mono.just(QueryResponse.notFound(catalogueKey, e.getMessage(), HttpStatus.NOT_FOUND));
+            return Mono.just(QueryResponse.notFound(request, e.getMessage(), HttpStatus.NOT_FOUND));
 
         } catch (Exception e) {
-            return Mono.just(QueryResponse.badRequest(catalogueKey, e.getMessage(), HttpStatus.BAD_REQUEST));
+            return Mono.just(QueryResponse.badRequest(request, e.getMessage(), HttpStatus.BAD_REQUEST));
         }
     }
 }

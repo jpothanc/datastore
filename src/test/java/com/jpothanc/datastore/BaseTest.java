@@ -1,10 +1,15 @@
 package com.jpothanc.datastore;
 
+import com.jpothanc.config.AppSettings;
+import com.jpothanc.models.CatalogueItem;
 import com.jpothanc.models.QueryRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.stream.Stream;
 
 public abstract class BaseTest {
+    @Autowired
+    AppSettings appSettings;
     protected static final String DATASTORE_API = "/api/v1/data/query?catalogue=%s&catalogueItem=%s";
     static Stream<Object[]> getValidQueryRequest() {
         var req1 = new QueryRequest(){{
@@ -37,4 +42,13 @@ public abstract class BaseTest {
         );
     }
 
+    protected QueryRequest getQueryRequest(){
+        return new QueryRequest(){{
+            setCatalogue("Trading");
+            setCatalogueItem("Users");
+        }};
+    }
+    protected CatalogueItem getCatalogueItem(QueryRequest request){
+        return appSettings.getCatalogueItem(request.getCatalogue(), request.getCatalogueItem());
+    }
 }

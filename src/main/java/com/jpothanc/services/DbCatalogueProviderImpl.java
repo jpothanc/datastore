@@ -1,8 +1,6 @@
 package com.jpothanc.services;
 
 import com.google.gson.JsonObject;
-import com.jpothanc.models.CatalogueItem;
-import com.jpothanc.models.Enums;
 import com.jpothanc.models.Enums.CatalogueProviders;
 import com.jpothanc.models.QueryRequest;
 import com.jpothanc.models.QueryResponse;
@@ -34,7 +32,7 @@ public class DbCatalogueProviderImpl implements CatalogueProvider {
         jsonObject.addProperty("age", 30);
         jsonObject.addProperty("city", "New York");
         res.add(jsonObject);
-        var response =  QueryResponse.createOkRespose(request);
+        var response =  QueryResponse.createOkResponse(request);
         response.setResult(res);
         response.setRecords(res.size());
         return CompletableFuture.completedFuture(response);

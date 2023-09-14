@@ -14,9 +14,11 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
+import static com.jpothanc.helpers.Constants.*;
+
 @Service
 @Scope(name = "prototype", description = "")
-public class CatalogueServiceImpl implements CatalogueService{
+public class CatalogueServiceImpl implements CatalogueService {
 
     @Autowired
     MemoryCache memoryCache;
@@ -27,35 +29,41 @@ public class CatalogueServiceImpl implements CatalogueService{
 
     @Autowired
     ProviderFactory providerFactory;
+
     @Override
     public CompletableFuture<QueryResponse> queryCatalogueItem(QueryRequest request) {
 
         var catalogueItem = appSettings.getCatalogueItem(request.getCatalogue(), request.getCatalogueItem());
-        if(catalogueItem == null)
-            throw new NoSuchElementException("Catalogue Item not found");
+        if (catalogueItem == null)
+            throw new NoSuchElementException(CATALOGUE_NOT_FOUND);
 
         var provider = providerFactory.getCatalogueProvider(request);
         return request.isSkipCache() ?
                 getResponse(catalogueItem, () -> provider.get().queryCatalogueItem(request)) :
-                getCachedResponse(catalogueItem, () -> provider.get().queryCatalogueItem(request)) ;
+                getCachedResponse(catalogueItem, () -> provider.get().queryCatalogueItem(request));
 
     }
 
     private CompletableFuture<QueryResponse> getCachedResponse(CatalogueItem catalogueItem, Supplier<CompletableFuture<QueryResponse>> func) {
-        System.out.println("getCachedResponse " + catalogueItem.getKey());
-        var res =  memoryCache.get(catalogueItem.getKey());
-        if(res == null)
-        {
-            System.out.println("returning from queryService");
-            res = func.get().join();
-            memoryCache.add(catalogueItem.getKey(),res);
+        var response = memoryCache.get(catalogueItem.getCacheKey());
+        if (response == null) {
+            response = func.get().join();
+            var cacheKey = catalogueItem.getCacheKey();
+            response.setCacheKey(cacheKey);
+            memoryCache.add(cacheKey, response);
+        } else {
+            response.setSource(CATALOGUE_SOURCE_CACHED);
         }
-        System.out.println("returning from cache");
-        return CompletableFuture.completedFuture(res);
+        return CompletableFuture.completedFuture(response);
     }
+
     private CompletableFuture<QueryResponse> getResponse(CatalogueItem catalogueItem, Supplier<CompletableFuture<QueryResponse>> func) {
-            System.out.println("getResponse " + catalogueItem.getKey());
-            return func.get();
+        return func.get();
     }
+
+    public  String getCacheKey(CatalogueItem catalogueItem){
+        return catalogueItem.getCacheKey();
+    }
+
 }
 

@@ -1,6 +1,7 @@
 package com.jpothanc.factory;
 
 import com.jpothanc.models.Enums;
+import com.jpothanc.models.Enums.CatalogueProviders;
 import com.jpothanc.models.QueryRequest;
 import com.jpothanc.services.CatalogueProvider;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.jpothanc.helpers.CatalogueHelper.getCatalogueKey;
+import static com.jpothanc.models.Enums.CatalogueProviders.*;
 
 @Component
 public class ProviderFactoryImpl implements ProviderFactory{
@@ -26,8 +28,7 @@ public class ProviderFactoryImpl implements ProviderFactory{
         if(provider.isPresent())
             return provider;
 
-        var p = providers.stream().filter(x -> x.getName().toString() == Enums.CatalogueProviders.Database.toString());
-        return p.findFirst();
+        return providers.stream().filter(x -> x.getName().toString() == Database.toString()).findFirst();
     }
 
     private Optional<CatalogueProvider> getCatalogueProviderInternal(QueryRequest request) {
