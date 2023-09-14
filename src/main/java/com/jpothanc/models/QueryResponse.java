@@ -15,7 +15,7 @@ import java.util.List;
 
 import static com.jpothanc.helpers.CatalogueHelper.*;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
 @ToString
@@ -24,16 +24,24 @@ public class QueryResponse {
     private String error;
     private String timeStamp;
     private int records;
-    private HttpStatusCode statusCode;
+    private String statusCode;
     private List<JsonObject> result;
     public boolean hasValue(){
         return result != null;
     }
+
+    public static QueryResponse createOkRespose(QueryRequest request){
+        var okRes = new QueryResponse();
+        okRes.setStatusCode(HttpStatus.OK.toString());
+        okRes.setCatalogueItem(getCatalogueKey(request));
+        okRes.setTimeStamp(formattedTimeStamp());
+       return  okRes;
+    }
+
     public static ResponseEntity<QueryResponse> notFound(String catalogueKey, String errorMessage, HttpStatusCode statusCode){
 
         return new ResponseEntity<>(generateResponse(catalogueKey,errorMessage,HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
     }
-
     public static ResponseEntity<QueryResponse> badRequest(String catalogueKey, String errorMessage,HttpStatusCode statusCode){
 
         return new ResponseEntity<>(generateResponse(catalogueKey,errorMessage,HttpStatus.BAD_REQUEST), HttpStatus.NOT_FOUND);
@@ -42,7 +50,7 @@ public class QueryResponse {
         var response = new QueryResponse();
         response.setCatalogueItem(catalogueKey);
         response.setError(errorMessage);
-        response.setStatusCode(HttpStatus.NOT_FOUND);
+        response.setStatusCode(statusCode.toString());
         response.setTimeStamp(formattedTimeStamp());
         return response;
     }

@@ -12,32 +12,28 @@ package com.jpothanc.datastore;
 //        These annotations provide control over the execution order and behavior of your JUnit 5 test methods and allow you to set up and tear down resources, perform setup tasks, and organize your tests effectively.
 
 
-
-import com.jpothanc.controllers.DataController;
+import com.jpothanc.helpers.CatalogueHelper;
 import com.jpothanc.models.QueryRequest;
-import com.jpothanc.services.CatalogueProvider;
-import com.jpothanc.services.CatalogueService;
-import org.assertj.core.api.Assertions;
-import org.junit.FixMethodOrder;
+import com.jpothanc.models.QueryResponse;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Mono;
 
+import java.util.stream.Stream;
+
+import static com.jpothanc.helpers.CatalogueHelper.getCatalogueKey;
+import static org.assertj.core.api.FactoryBasedNavigableListAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.result.StatusResultMatchersExtensionsKt.isEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 //@WebFluxTest
 //@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -48,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 //@SpringBootTest
-class DataStoreControllerTests {
+class DataStoreControllerTests extends BaseTest{
 
 
     @Autowired
@@ -59,7 +55,7 @@ class DataStoreControllerTests {
     }
 
     @Test
-    public void testGetData1() {
+    public void when_DataControllerIsQueries_ShouldReturnValidResponse() {
         webTestClient.get()
                 .uri("/api/v1/data/")
                 .accept(MediaType.APPLICATION_JSON)
@@ -69,13 +65,45 @@ class DataStoreControllerTests {
                 .isEqualTo("DataStore");
     }
 
-//    @Test
-//    public void test3GetSingleGithubRepository() {
-//        webTestClient.get().uri("/api/repos/{repo}", "test-webclient-repository")
-//                .exchange()
-//                .expectStatus().isOk()
-//                .expectBody()
-//                .consumeWith(response -> Assertions.assertThat(response.getResponseBody()).isNotNull());
-//    }
+
+    @ParameterizedTest
+    @MethodSource("getValidQueryRequest")
+    public void when_CatalogueItemIsQueried_ShouldReturnValidQueryResponse(QueryRequest request) {
+        var api = String.format(DATASTORE_API, request.getCatalogue(), request.getCatalogueItem());
+        webTestClient.get()
+                .uri(api)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(QueryResponse.class)
+                .consumeWith(response -> {
+                    QueryResponse res = response.getResponseBody();
+                    // Assert individual attributes of response
+                    assertEquals(res.getStatusCode(), HttpStatus.OK.toString());
+                    assertEquals(res.getCatalogueItem(), getCatalogueKey(request));
+                    assertNotNull(res);
+                    assertNotNull(res.getResult());
+                });
+    }
+    @ParameterizedTest
+    @MethodSource("getInValidQueryRequest")
+    public void when_InValidCatalogueItemIsQueried_ShouldReturnValidQueryResponse(QueryRequest request) {
+        var api = String.format(DATASTORE_API, request.getCatalogue(), request.getCatalogueItem());
+        webTestClient.get()
+                .uri(api)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(QueryResponse.class)
+                .consumeWith(response -> {
+                    QueryResponse res = response.getResponseBody();
+                    // Assert individual attributes of response
+                    assertNotNull(res);
+                    assertEquals(res.getCatalogueItem(), getCatalogueKey(request));
+                    assertEquals(res.getStatusCode(), HttpStatus.NOT_FOUND.toString());
+                    assertNull(res.getResult());
+                });
+    }
+
+
 
 }

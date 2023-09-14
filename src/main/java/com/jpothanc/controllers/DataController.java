@@ -36,50 +36,23 @@ public class DataController {
         return future;
     }
     @GetMapping("/")
-    @Async
     public Mono<ResponseEntity<String>> get() throws ExecutionException, InterruptedException {
 
           return Mono.just(ResponseEntity.ok("DataStore"));
-          // Your asynchronous logic here
-            //return Mono.just(ResponseEntity.ok(catalogueService.queryCatalogueItem("","").join()));
-
-
-//        JsonObject jsonObject = new JsonObject();
-//        // Add key-value pairs to the JSON object
-//        jsonObject.addProperty("name", "John");
-//        jsonObject.addProperty("age", 30);
-//        jsonObject.addProperty("city", "New York");
-//        List<JsonObject> res =  new ArrayList<JsonObject>();
-//        res.add(jsonObject);
-//        var response = new QueryResponse();
-//        response.setResult(res);
-//        //return new ResponseEntity<>(res, HttpStatus.OK);
-//        return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-
-//    @GetMapping("/{catalogue}/{catalogueItem}")
-//    public ResponseEntity<QueryResponse> getCatalogueItem(@PathVariable("catalogue") String catalogue, @PathVariable("catalogueItem") String catalogueItem) {
-//        QueryResponse response = null;
-//        response = catalogueService.get(catalogue, catalogueItem).join();
-//        return new ResponseEntity<>(response, HttpStatus.OK);
-//    }
     @GetMapping("/query")
     public Mono<ResponseEntity<QueryResponse>> getCatalogueItem(@ModelAttribute QueryRequest request) {
         var catalogueKey = getCatalogueKey(request);
 
         try {
-//            if(request.isCancel())
-//                return Mono.just(ResponseEntity.ok(""));
             var response = catalogueService.queryCatalogueItem(request).join();
             return Mono.just(ResponseEntity.ok(response));
-        }catch (NoSuchElementException  e)
-        {
+
+        } catch (NoSuchElementException e) {
             return Mono.just(QueryResponse.notFound(catalogueKey, e.getMessage(), HttpStatus.NOT_FOUND));
-        }
-        catch (Exception e) {
+
+        } catch (Exception e) {
             return Mono.just(QueryResponse.badRequest(catalogueKey, e.getMessage(), HttpStatus.BAD_REQUEST));
-        } finally {
         }
     }
 }

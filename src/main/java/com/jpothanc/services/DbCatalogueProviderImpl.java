@@ -34,13 +34,9 @@ public class DbCatalogueProviderImpl implements CatalogueProvider {
         jsonObject.addProperty("age", 30);
         jsonObject.addProperty("city", "New York");
         res.add(jsonObject);
-        var response = new QueryResponse();
+        var response =  QueryResponse.createOkRespose(request);
         response.setResult(res);
         response.setRecords(res.size());
-        response.setCatalogueItem("");
-        response.setCatalogueItem(request.getCatalogueItem());
-
-
         return CompletableFuture.completedFuture(response);
     }
 }
