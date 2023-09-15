@@ -38,10 +38,11 @@ public class CatalogueServiceImpl implements CatalogueService {
         if (catalogueItem == null)
             throw new NoSuchElementException(CATALOGUE_NOT_FOUND);
 
-        if(catalogueItem.getQueryArgs() != null && catalogueItem.getQueryArgs().length > 0) {
-            var query = String.format(catalogueItem.getQuery(),catalogueItem.getQueryArgs());
+        if(request.getQueryArgs() != null && request.getQueryArgs().length > 0) {
+            var query = String.format(catalogueItem.getQuery(),request.getQueryArgs());
             catalogueItem.setQuery(query);
         }
+        request.setCatalogueItemInstance(catalogueItem);
 
         var provider = providerFactory.getCatalogueProvider(request);
         return request.isSkipCache() ?

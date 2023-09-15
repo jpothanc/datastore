@@ -1,11 +1,17 @@
 package com.ibit.datastore.datastore;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibit.datastore.config.AppSettings;
 import com.ibit.datastore.models.CatalogueItem;
 import com.ibit.datastore.models.QueryRequest;
+import com.ibit.datastore.services.AppService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.stream.Stream;
+
+import static com.ibit.datastore.helpers.Constants.KEY_SEP;
 
 public abstract class BaseTest {
     @Autowired

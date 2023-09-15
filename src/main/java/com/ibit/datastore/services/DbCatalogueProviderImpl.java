@@ -33,9 +33,9 @@ public class DbCatalogueProviderImpl implements CatalogueProvider {
             setUsername("postgres");
             setPassword("admin");
         }};
-
+        var cItem = request.getCatalogueItemInstance();
         DbRequest  dbRequest = new DbRequest(){{
-            setQuery("SELECT * FROM Student");
+            setQuery(cItem.getQuery());
             setDatabaseSetting(dbSetting);
         }};
         DatabaseService databaseService = new DatabaseServiceImpl();

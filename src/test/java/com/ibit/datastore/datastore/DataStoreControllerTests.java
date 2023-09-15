@@ -13,14 +13,18 @@ package com.ibit.datastore.datastore;
 
 import com.ibit.datastore.models.QueryRequest;
 import com.ibit.datastore.models.QueryResponse;
+import com.ibit.datastore.services.AppService;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -31,16 +35,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureWebTestClient
+@TestPropertySource(locations = "classpath:appsettings.test.json")
 class DataStoreControllerTests extends BaseTest{
-
-
     @Autowired
     private WebTestClient webTestClient;
-
-    public DataStoreControllerTests() {
-
-    }
-
     @Test
     public void when_DataControllerIsQueries_ShouldReturnValidResponse() {
         webTestClient.get()

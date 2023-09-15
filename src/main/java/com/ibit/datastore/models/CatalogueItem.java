@@ -1,11 +1,17 @@
 package com.ibit.datastore.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ibit.datastore.helpers.CatalogueHelper;
 import com.ibit.datastore.helpers.Constants;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Objects;
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Setter
+@Getter
 public class CatalogueItem implements Cloneable{
     private String key;
     private String datasource;
@@ -13,8 +19,6 @@ public class CatalogueItem implements Cloneable{
     private boolean preload;
     private String indexes;
     private String health;
-
-    private String[] queryArgs;
     @Override
     public int hashCode() {
         return Objects.hash(key, query,datasource);
@@ -33,59 +37,4 @@ public class CatalogueItem implements Cloneable{
         return CatalogueHelper.generateCacheKey(key, Constants.QUERY_TYPE_REST,hashCode());
     }
 
-    public String getDatasource() {
-        return datasource;
-    }
-
-    public void setDatasource(String datasource) {
-        this.datasource = datasource;
-    }
-
-    public String getQuery() {
-        return query;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
-    public boolean isPreload() {
-        return preload;
-    }
-
-    public void setPreload(boolean preload) {
-        this.preload = preload;
-    }
-
-    public String getIndexes() {
-        return indexes;
-    }
-
-    public void setIndexes(String indexes) {
-        this.indexes = indexes;
-    }
-
-    public String getHealth() {
-        return health;
-    }
-
-    public void setHealth(String health) {
-        this.health = health;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String[] getQueryArgs() {
-        return queryArgs;
-    }
-
-    public void setQueryArgs(String[] queryArgs) {
-        this.queryArgs = queryArgs;
-    }
 }
