@@ -24,4 +24,9 @@ public class MemoryCacheImpl implements MemoryCache{
     public QueryResponse get(String key) {
         return cache.getIfPresent(key);
     }
+
+    @Override
+    public void remove(String key) {
+        cache.invalidate(key);
+    }
 }

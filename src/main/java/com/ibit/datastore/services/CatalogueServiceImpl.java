@@ -34,21 +34,30 @@ public class CatalogueServiceImpl implements CatalogueService {
     @Override
     public CompletableFuture<QueryResponse> queryCatalogueItem(QueryRequest request) {
 
-        var catalogueItem = appSettings.getCatalogueItem(request.getCatalogue(), request.getCatalogueItem());
-        if (catalogueItem == null)
+        var cItem = appSettings.getCatalogueItem(request.getCatalogue(), request.getCatalogueItem());
+        if (cItem == null)
             throw new NoSuchElementException(CATALOGUE_NOT_FOUND);
 
         if(request.getQueryArgs() != null && request.getQueryArgs().length > 0) {
-            var query = String.format(catalogueItem.getQuery(),request.getQueryArgs());
-            catalogueItem.setQuery(query);
+            var query = String.format(cItem.getQuery(),request.getQueryArgs());
+            cItem.setQuery(query);
         }
-        request.setCatalogueItemInstance(catalogueItem);
+        request.setCatalogueItemInstance(cItem);
 
         var provider = providerFactory.getCatalogueProvider(request);
         return request.isSkipCache() ?
-                getResponse(catalogueItem, () -> provider.get().queryCatalogueItem(request)) :
-                getCachedResponse(catalogueItem, () -> provider.get().queryCatalogueItem(request));
+                getResponse(cItem, () -> provider.get().queryCatalogueItem(request)) :
+                getCachedResponse(cItem, () -> provider.get().queryCatalogueItem(request));
 
+    }
+
+    @Override
+    public void clearCatalogue(String catalogue, String catalogueItem) {
+        var cItem = appSettings.getCatalogueItem(catalogue, catalogueItem);
+        if (cItem == null)
+            throw new NoSuchElementException(CATALOGUE_NOT_FOUND);
+
+         memoryCache.remove(cItem.getCacheKey());
     }
 
     private CompletableFuture<QueryResponse> getCachedResponse(CatalogueItem catalogueItem, Supplier<CompletableFuture<QueryResponse>> func) {

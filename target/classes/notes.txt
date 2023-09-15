@@ -1,7 +1,11 @@
 Todo
 - Tests - Done
 - Wire up Odbc database - Done
-- Wire up the appsettings
+- Wire up the appsettings - Done
+- Admin - clear cache
+- Use test settings for test
+
+
 - Schedules and Warmup
 - Indexing
 - Async

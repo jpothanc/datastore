@@ -42,12 +42,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestPropertySource(locations = "classpath:appsettings.test.json")
 @FixMethodOrder(MethodSorters.JVM) //Disable parallel execution
 class DataStoreControllerTests extends BaseTest{
-    @BeforeEach
-    public void beforeEachTest(){
-        appService.start();
-    }
-    @Autowired
-    private WebTestClient webTestClient;
+
     @Test
     public void when_DataControllerIsQueries_ShouldReturnValidResponse() {
         webTestClient.get()
@@ -105,6 +100,8 @@ class DataStoreControllerTests extends BaseTest{
     @Test
       public void when_CatalogueItemIsQueriedTwice_ShouldReturnSourceAsCachedOnSecondCall() {
         var request = getQueryRequest();
+        clearCache(request);
+
         var api = String.format(DATASTORE_API, request.getCatalogue(), request.getCatalogueItem());
         webTestClient.get()
                 .uri(api)

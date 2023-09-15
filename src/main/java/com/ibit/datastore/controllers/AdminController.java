@@ -2,9 +2,11 @@ package com.ibit.datastore.controllers;
 
 import com.ibit.datastore.config.AppSettings;
 import com.ibit.datastore.models.Catalogue;
+import com.ibit.datastore.services.CatalogueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,9 +17,18 @@ import java.util.Map;
 public class AdminController {
     @Autowired
     AppSettings appSettings;
+    @Autowired
+    CatalogueService catalogueService;
 
     @GetMapping("/catalogues")
     public ResponseEntity<Map<String, Catalogue>> getConfig(){
         return ResponseEntity.ok(appSettings.getCatalogues());
+    }
+    @GetMapping("/clear/{catalogue}/{catalogueItem}")
+    public ResponseEntity<String> clearCache(@PathVariable String catalogue,
+                                                             @PathVariable String catalogueItem){
+
+        catalogueService.clearCatalogue(catalogue, catalogueItem);
+        return ResponseEntity.ok("Success");
     }
 }
