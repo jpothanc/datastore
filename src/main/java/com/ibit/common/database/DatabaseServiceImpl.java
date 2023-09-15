@@ -1,48 +1,57 @@
 package com.ibit.common.database;
 
-import com.ibit.common.models.DbRequest;
-import com.ibit.common.models.DbResponse;
+import com.ibit.common.database.models.DataRow;
+import com.ibit.common.database.models.DbRequest;
+import com.ibit.common.database.models.DbResponse;
+import io.swagger.annotations.Scope;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.util.*;
 
 @Service
+
 public class DatabaseServiceImpl implements  DatabaseService {
 
     public DbResponse Query(DbRequest request) {
-        String jdbcUrl = "jdbc:postgresql://localhost:5432/test";
-        String username = "postgres";
-        String password = "admin";
 
-        try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password)) {
+        Map<Long, DataRow> result = new HashMap<>(100);
+
+        try (Connection connection = DriverManager.getConnection(
+                request.getDatabaseSetting().getConnectionString(),
+                request.getDatabaseSetting().getUsername(),
+                request.getDatabaseSetting().getPassword())) {
             if (connection != null) {
                 System.out.println("Connected to the database");
-
-                // Create a statement
                 Statement statement = connection.createStatement();
 
-                // Execute an SQL query
-                String sqlQuery = "SELECT * FROM Student"; // Replace with your SQL query
+                String sqlQuery = request.getQuery();
                 ResultSet resultSet = statement.executeQuery(sqlQuery);
-
+                ResultSetMetaData metaData = resultSet.getMetaData();
+                int columnCount = metaData.getColumnCount();
+                Long rowId = 0L;
                 // Process the query results
                 while (resultSet.next()) {
-                    // Retrieve data from the result set
-                    int id = resultSet.getInt("id");
-                    String name = resultSet.getString("name");
 
-                    // Process the data
-                    System.out.println("ID: " + id + ", Name: " + name);
+                    DataRow dataRow = new DataRow();
+
+                    for (int i = 1; i <= columnCount; i++) {
+                        String name = metaData.getColumnName(i);
+                        var value = resultSet.getObject(name);
+                        dataRow.put(name,value);
+                    }
+                    result.put(++rowId,dataRow);
                 }
 
-                // Close the result set and statement
                 resultSet.close();
                 statement.close();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return  new DbResponse();
+        var response = new DbResponse();
+        response.setResultSet(result);
+        return response;
     }
 }
 

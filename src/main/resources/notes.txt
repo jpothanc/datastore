@@ -1,6 +1,7 @@
 Todo
 - Tests - Done
-- Wire up Odbc database
+- Wire up Odbc database - Done
+- Wire up the appsettings
 - Schedules and Warmup
 - Indexing
 - Async

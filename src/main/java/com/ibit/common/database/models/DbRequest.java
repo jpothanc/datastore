@@ -1,4 +1,4 @@
-package com.ibit.common.models;
+package com.ibit.common.database.models;
 
 import lombok.Getter;
 import lombok.Setter;

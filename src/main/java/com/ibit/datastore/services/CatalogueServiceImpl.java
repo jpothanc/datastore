@@ -1,5 +1,6 @@
 package com.ibit.datastore.services;
 
+import com.ibit.common.database.DatabaseService;
 import com.ibit.datastore.cache.MemoryCache;
 import com.ibit.datastore.config.AppSettings;
 import com.ibit.datastore.factory.ProviderFactory;
@@ -59,7 +60,7 @@ public class CatalogueServiceImpl implements CatalogueService {
         } else {
             response.setSource(CATALOGUE_SOURCE_CACHED);
         }
-        return CompletableFuture.completedFuture(response);
+        return CompletableFuture.completedFuture(response.clone());
     }
 
     private CompletableFuture<QueryResponse> getResponse(CatalogueItem catalogueItem, Supplier<CompletableFuture<QueryResponse>> func) {

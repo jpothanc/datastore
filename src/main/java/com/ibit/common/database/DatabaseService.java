@@ -1,8 +1,10 @@
 package com.ibit.common.database;
 
-import com.ibit.common.models.DbRequest;
-import com.ibit.common.models.DbResponse;
+import com.ibit.common.database.models.DbRequest;
+import com.ibit.common.database.models.DbResponse;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface DatabaseService {
     DbResponse Query(DbRequest request);
 }

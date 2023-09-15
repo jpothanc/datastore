@@ -1,7 +1,9 @@
 package com.ibit.datastore.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.gson.JsonObject;
+import com.ibit.common.database.models.DataRow;
 import com.ibit.datastore.helpers.Constants;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
+import java.util.*;
 
 import static com.ibit.datastore.helpers.CatalogueHelper.*;
 
@@ -24,12 +26,39 @@ public class QueryResponse {
     private String timeStamp;
     private int records;
     private String statusCode;
-    private List<JsonObject> result;
+    @JsonIgnore
+    private Map<Long,DataRow> data;
     private String source;
     private String cacheKey;
+    private List<JsonObject> result;
 
     public boolean hasValue() {
         return result != null;
+    }
+    public void setData(Map<Long,DataRow> result){
+        this.data = result;
+        if(result != null)
+            this.records =  result.size();
+    }
+
+    public QueryResponse clone() {
+        var q = new QueryResponse();
+        q.cacheKey = this.cacheKey;
+        q.records = this.records;
+        q.statusCode = this.statusCode;
+        q.catalogueItem = this.catalogueItem;
+        q.error = this.error;
+        q.timeStamp = this.timeStamp;
+        q.source = this.source;
+        q.data = null;
+        q.result = new ArrayList<>();
+
+        for (var key:data.keySet()) {
+            var row = data.get(key);
+            q.result.add(row.getJsonObject());
+        }
+
+        return q;
     }
 
     public static QueryResponse createOkResponse(QueryRequest request) {

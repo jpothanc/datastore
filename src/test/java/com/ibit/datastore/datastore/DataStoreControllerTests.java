@@ -70,6 +70,7 @@ class DataStoreControllerTests extends BaseTest{
                     assertEquals(res.getStatusCode(), HttpStatus.OK.toString());
                     assertEquals(res.getCatalogueItem(), getCatalogueKey(request));
                     assertNotNull(res);
+                    assertNull(res.getData());
                     assertNotNull(res.getResult());
                     assertEquals(res.getCacheKey(), cacheKey);
                 });
@@ -89,6 +90,7 @@ class DataStoreControllerTests extends BaseTest{
                     assertNotNull(res);
                     assertEquals(res.getCatalogueItem(), getCatalogueKey(request));
                     assertEquals(res.getStatusCode(), HttpStatus.NOT_FOUND.toString());
+                    assertNull(res.getData());
                     assertNull(res.getResult());
                 });
     }
