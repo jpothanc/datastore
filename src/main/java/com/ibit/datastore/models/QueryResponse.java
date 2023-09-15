@@ -26,7 +26,6 @@ public class QueryResponse {
     private String timeStamp;
     private int records;
     private String statusCode;
-    @JsonIgnore
     private Map<Long,DataRow> data;
     private String source;
     private String cacheKey;

@@ -16,6 +16,9 @@ import static com.ibit.datastore.helpers.Constants.KEY_SEP;
 public abstract class BaseTest {
     @Autowired
     AppSettings appSettings;
+    @Autowired
+    AppService appService;
+
     protected static final String DATASTORE_API = "/api/v1/data/query?catalogue=%s&catalogueItem=%s";
     static Stream<Object[]> getValidQueryRequest() {
         var req1 = new QueryRequest(){{

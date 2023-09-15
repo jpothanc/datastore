@@ -14,11 +14,14 @@ package com.ibit.datastore.datastore;
 import com.ibit.datastore.models.QueryRequest;
 import com.ibit.datastore.models.QueryResponse;
 import com.ibit.datastore.services.AppService;
+import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,7 +40,12 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 @TestPropertySource(locations = "classpath:appsettings.test.json")
+@FixMethodOrder(MethodSorters.JVM) //Disable parallel execution
 class DataStoreControllerTests extends BaseTest{
+    @BeforeEach
+    public void beforeEachTest(){
+        appService.start();
+    }
     @Autowired
     private WebTestClient webTestClient;
     @Test
@@ -98,7 +106,31 @@ class DataStoreControllerTests extends BaseTest{
       public void when_CatalogueItemIsQueriedTwice_ShouldReturnSourceAsCachedOnSecondCall() {
         var request = getQueryRequest();
         var api = String.format(DATASTORE_API, request.getCatalogue(), request.getCatalogueItem());
+        webTestClient.get()
+                .uri(api)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(QueryResponse.class)
+                .consumeWith(response -> {
+                    QueryResponse res = response.getResponseBody();
+                    assertEquals(res.getSource(), CATALOGUE_SOURCE_QUERY);
+                });
 
+        webTestClient.get()
+                .uri(api)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(QueryResponse.class)
+                .consumeWith(response -> {
+                    QueryResponse res = response.getResponseBody();
+                    assertEquals(res.getSource(), CATALOGUE_SOURCE_CACHED);
+                });
+    }
+
+    @Test
+    public void when_CatalogueItemIsQueriedTwice_ShouldReturnSourceAsCachedOnSecondCall1() {
+        var request = getQueryRequest();
+        var api = String.format(DATASTORE_API, request.getCatalogue(), request.getCatalogueItem());
         webTestClient.get()
                 .uri(api)
                 .exchange()

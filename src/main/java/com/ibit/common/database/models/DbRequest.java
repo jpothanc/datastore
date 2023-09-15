@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class DbRequest {
     private String query;
-    private DatabaseSetting databaseSetting;
+    private DatasourceSetting databaseSetting;
 }
