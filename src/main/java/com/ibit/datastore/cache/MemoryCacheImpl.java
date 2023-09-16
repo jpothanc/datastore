@@ -6,7 +6,7 @@ import com.ibit.datastore.models.QueryResponse;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MemoryCacheImpl implements MemoryCache{
+public class MemoryCacheImpl implements MemoryCache {
     Cache<String, QueryResponse> cache;
 
     public MemoryCacheImpl() {

@@ -1,7 +1,6 @@
 package com.ibit.datastore.datastore;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ibit.datastore.config.AppSettings;
+import com.ibit.datastore.config.AppConfig;
 import com.ibit.datastore.models.CatalogueItem;
 import com.ibit.datastore.models.QueryRequest;
 import com.ibit.datastore.services.AppService;
@@ -9,11 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.stream.Stream;
-
-import static com.ibit.datastore.helpers.Constants.KEY_SEP;
 
 public abstract class BaseTest {
     @BeforeEach
@@ -23,7 +18,7 @@ public abstract class BaseTest {
     @Autowired
     protected WebTestClient webTestClient;
     @Autowired
-    AppSettings appSettings;
+    AppConfig appConfig;
     @Autowired
     AppService appService;
 
@@ -77,6 +72,6 @@ public abstract class BaseTest {
                 .isEqualTo("Success");
     }
     protected CatalogueItem getCatalogueItem(QueryRequest request){
-        return appSettings.getCatalogueItem(request.getCatalogue(), request.getCatalogueItem());
+        return appConfig.getCatalogueItem(request.getCatalogue(), request.getCatalogueItem());
     }
 }

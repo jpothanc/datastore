@@ -9,3 +9,16 @@ Todo
 - Schedules and Warmup
 - Indexing
 - Async
+
+
+CREATE TABLE "Users" (
+	"username"	TEXT,
+	"fullname"	TEXT,
+	"desk"	TEXT,
+	"retired"	INTEGER,
+	"poweruser"	INTEGER,
+	"comments"	TEXT,
+	"datecreated"	TEXT,
+	PRIMARY KEY("username")
+)
+INSERT into Users VALUES('jpothanc','Jessish Pothancheri','HKNJADL',0,1,'','20231609');

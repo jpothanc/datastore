@@ -1,10 +1,8 @@
 package com.ibit.datastore.models;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.ibit.common.database.models.DatasourceSetting;
-import com.ibit.datastore.config.AppSettings;
+import com.ibit.datastore.config.AppConfig;
 import com.ibit.datastore.helpers.CatalogueHelper;
 import com.ibit.datastore.helpers.Constants;
 import lombok.Getter;
@@ -12,13 +10,14 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Objects;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Setter
 @Getter
 public class CatalogueItem implements Cloneable {
 
     @Autowired
-    AppSettings appSettings;
+    AppConfig appConfig;
 
     private String key;
     private String datasource;

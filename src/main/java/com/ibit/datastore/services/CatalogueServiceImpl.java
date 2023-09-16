@@ -1,8 +1,7 @@
 package com.ibit.datastore.services;
 
-import com.ibit.common.database.DatabaseService;
 import com.ibit.datastore.cache.MemoryCache;
-import com.ibit.datastore.config.AppSettings;
+import com.ibit.datastore.config.AppConfig;
 import com.ibit.datastore.factory.ProviderFactory;
 import com.ibit.datastore.models.CatalogueItem;
 import com.ibit.datastore.models.QueryRequest;
@@ -15,10 +14,11 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-import static com.ibit.datastore.helpers.Constants.*;
+import static com.ibit.datastore.helpers.Constants.CATALOGUE_NOT_FOUND;
+import static com.ibit.datastore.helpers.Constants.CATALOGUE_SOURCE_CACHED;
 
 @Service
-@Scope(name = "prototype", description = "")
+@Scope(name = "prototype", description = "CatalogueServiceImpl")
 public class CatalogueServiceImpl implements CatalogueService {
 
     @Autowired
@@ -26,7 +26,7 @@ public class CatalogueServiceImpl implements CatalogueService {
     @Autowired
     CatalogueProvider queryService;
     @Autowired
-    AppSettings appSettings;
+    AppConfig appConfig;
 
     @Autowired
     ProviderFactory providerFactory;
@@ -34,12 +34,12 @@ public class CatalogueServiceImpl implements CatalogueService {
     @Override
     public CompletableFuture<QueryResponse> queryCatalogueItem(QueryRequest request) {
 
-        var cItem = appSettings.getCatalogueItem(request.getCatalogue(), request.getCatalogueItem());
+        var cItem = appConfig.getCatalogueItem(request.getCatalogue(), request.getCatalogueItem());
         if (cItem == null)
             throw new NoSuchElementException(CATALOGUE_NOT_FOUND);
 
-        if(request.getQueryArgs() != null && request.getQueryArgs().length > 0) {
-            var query = String.format(cItem.getQuery(),request.getQueryArgs());
+        if (request.getQueryArgs() != null && request.getQueryArgs().length > 0) {
+            var query = String.format(cItem.getQuery(), request.getQueryArgs());
             cItem.setQuery(query);
         }
         request.setCatalogueItemInstance(cItem);
@@ -53,11 +53,11 @@ public class CatalogueServiceImpl implements CatalogueService {
 
     @Override
     public void clearCatalogue(String catalogue, String catalogueItem) {
-        var cItem = appSettings.getCatalogueItem(catalogue, catalogueItem);
+        var cItem = appConfig.getCatalogueItem(catalogue, catalogueItem);
         if (cItem == null)
             throw new NoSuchElementException(CATALOGUE_NOT_FOUND);
 
-         memoryCache.remove(cItem.getCacheKey());
+        memoryCache.remove(cItem.getCacheKey());
     }
 
     private CompletableFuture<QueryResponse> getCachedResponse(CatalogueItem catalogueItem, Supplier<CompletableFuture<QueryResponse>> func) {
@@ -77,7 +77,7 @@ public class CatalogueServiceImpl implements CatalogueService {
         return func.get();
     }
 
-    public  String getCacheKey(CatalogueItem catalogueItem){
+    public String getCacheKey(CatalogueItem catalogueItem) {
         return catalogueItem.getCacheKey();
     }
 

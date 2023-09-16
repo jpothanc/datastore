@@ -7,6 +7,7 @@ import java.util.concurrent.CompletableFuture;
 
 public interface CatalogueService {
     CompletableFuture<QueryResponse> queryCatalogueItem(QueryRequest request);
+
     void clearCatalogue(String catalogue, String catalogueItem);
 
 }

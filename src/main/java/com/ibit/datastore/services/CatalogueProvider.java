@@ -8,5 +8,6 @@ import java.util.concurrent.CompletableFuture;
 
 public interface CatalogueProvider {
     CatalogueProviders getName();
+
     CompletableFuture<QueryResponse> queryCatalogueItem(QueryRequest request);
 }

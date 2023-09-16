@@ -2,10 +2,24 @@ Todo
 - Tests - Done
 - Wire up Odbc database - Done
 - Wire up the appsettings - Done
-- Admin - clear cache
+- Admin - clear cache - Done
+- Env wise configuration - Done
 - Use test settings for test
 
 
 - Schedules and Warmup
 - Indexing
 - Async
+
+
+CREATE TABLE "Users" (
+	"username"	TEXT,
+	"fullname"	TEXT,
+	"desk"	TEXT,
+	"retired"	INTEGER,
+	"poweruser"	INTEGER,
+	"comments"	TEXT,
+	"datecreated"	TEXT,
+	PRIMARY KEY("username")
+)
+INSERT into Users VALUES('jpothanc','Jessish Pothancheri','HKNJADL',0,1,'','20231609');

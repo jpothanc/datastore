@@ -18,39 +18,42 @@ import java.util.Optional;
 @Scope("singleton")
 @Getter
 @Setter
-public class AppSettings {
+public class AppConfig {
 
     private Map<String, Catalogue> catalogues = new HashMap<>();
     private Map<String, DatasourceSetting> dataSources = new HashMap<>();
 
-    public AppSettings() {
-        System.out.println("AppSettings init");
+    public AppConfig() {
+
+        System.out.println("AppConfig initialization");
     }
+
     public CatalogueItem getCatalogueItem(String name, String itemName) throws NoSuchElementException {
-        var key = CatalogueHelper.getCatalogueKey(name,itemName);
+        var key = CatalogueHelper.getCatalogueKey(name, itemName);
 
         name = name.toLowerCase();
         itemName = itemName.toLowerCase();
-        if(!this.catalogues.containsKey(name))
+        if (!this.catalogues.containsKey(name))
             return null;
 
         var catalogue = this.catalogues.get(name);
-        if(!catalogue.getItems().containsKey(itemName))
+        if (!catalogue.getItems().containsKey(itemName))
             return null;
 
         CatalogueItem clone = null;
         try {
-            var cItem =  catalogue.getItems().get(itemName);
-            if(cItem != null) {
-                clone = (CatalogueItem)cItem.clone();
+            var cItem = catalogue.getItems().get(itemName);
+            if (cItem != null) {
+                clone = (CatalogueItem) cItem.clone();
             }
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
         return clone;
     }
+
     public Optional<DatasourceSetting> getDataSourceSetting(String datasource) {
-        var setting =  getDataSources().containsKey(datasource) ?
+        var setting = getDataSources().containsKey(datasource) ?
                 getDataSources().get(datasource) :
                 null;
         return Optional.ofNullable(setting);

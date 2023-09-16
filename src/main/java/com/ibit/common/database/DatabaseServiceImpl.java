@@ -3,15 +3,15 @@ package com.ibit.common.database;
 import com.ibit.common.database.models.DataRow;
 import com.ibit.common.database.models.DbRequest;
 import com.ibit.common.database.models.DbResponse;
-import io.swagger.annotations.Scope;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 
-public class DatabaseServiceImpl implements  DatabaseService {
+public class DatabaseServiceImpl implements DatabaseService {
 
     public DbResponse Query(DbRequest request) {
 
@@ -38,9 +38,9 @@ public class DatabaseServiceImpl implements  DatabaseService {
                     for (int i = 1; i <= columnCount; i++) {
                         String name = metaData.getColumnName(i);
                         var value = resultSet.getObject(name);
-                        dataRow.put(name,value);
+                        dataRow.put(name, value);
                     }
-                    result.put(++rowId,dataRow);
+                    result.put(++rowId, dataRow);
                 }
 
                 resultSet.close();

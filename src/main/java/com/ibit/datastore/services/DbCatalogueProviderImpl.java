@@ -2,9 +2,8 @@ package com.ibit.datastore.services;
 
 import com.ibit.common.database.DatabaseService;
 import com.ibit.common.database.DatabaseServiceImpl;
-import com.ibit.common.database.models.DatasourceSetting;
 import com.ibit.common.database.models.DbRequest;
-import com.ibit.datastore.config.AppSettings;
+import com.ibit.datastore.config.AppConfig;
 import com.ibit.datastore.models.Enums.CatalogueProviders;
 import com.ibit.datastore.models.QueryRequest;
 import com.ibit.datastore.models.QueryResponse;
@@ -21,7 +20,8 @@ public class DbCatalogueProviderImpl implements CatalogueProvider {
     //    @Autowired
 //    DatabaseService databaseService;
     @Autowired
-    AppSettings appSettings;
+    AppConfig appSettings;
+
     @Override
     public CatalogueProviders getName() {
         return CatalogueProviders.Database;
@@ -34,15 +34,15 @@ public class DbCatalogueProviderImpl implements CatalogueProvider {
         var cItem = request.getCatalogueItemInstance();
 
         var dbSetting = appSettings.getDataSourceSetting(cItem.getDatasource());
-        if(dbSetting.isEmpty())
+        if (dbSetting.isEmpty())
             throw new RuntimeException("DataSource not found : " + cItem.getDatasource());
-        DbRequest  dbRequest = new DbRequest(){{
+        DbRequest dbRequest = new DbRequest() {{
             setQuery(cItem.getQuery());
             setDatabaseSetting(dbSetting.get());
         }};
         DatabaseService databaseService = new DatabaseServiceImpl();
         var dbResponse = databaseService.Query(dbRequest);
-        var qResponse =  QueryResponse.createOkResponse(request);
+        var qResponse = QueryResponse.createOkResponse(request);
         qResponse.setData(dbResponse.getResultSet());
         return CompletableFuture.completedFuture(qResponse);
     }

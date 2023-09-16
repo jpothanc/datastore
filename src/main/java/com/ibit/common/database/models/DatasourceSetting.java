@@ -11,7 +11,8 @@ public class DatasourceSetting {
     private String username;
     private String password;
     private String healthQuery;
+
     public String getConnectionString() {
-        return String.format(connectionString, username,password);
+        return String.format(connectionString, username, password);
     }
 }

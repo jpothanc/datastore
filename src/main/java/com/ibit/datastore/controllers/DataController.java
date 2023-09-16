@@ -6,7 +6,10 @@ import com.ibit.datastore.services.CatalogueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.util.NoSuchElementException;
@@ -18,11 +21,13 @@ import java.util.concurrent.ExecutionException;
 public class DataController {
     @Autowired
     CatalogueService catalogueService;
+
     @GetMapping("/")
     public Mono<ResponseEntity<String>> get() throws ExecutionException, InterruptedException {
 
-          return Mono.just(ResponseEntity.ok("DataStore"));
+        return Mono.just(ResponseEntity.ok("DataStore"));
     }
+
     @GetMapping("/query")
     public Mono<ResponseEntity<QueryResponse>> getCatalogueItem(@ModelAttribute QueryRequest request) {
 

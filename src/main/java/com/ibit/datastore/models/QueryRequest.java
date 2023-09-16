@@ -1,9 +1,7 @@
 package com.ibit.datastore.models;
 
-import com.ibit.datastore.config.AppSettings;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Setter
 @Getter

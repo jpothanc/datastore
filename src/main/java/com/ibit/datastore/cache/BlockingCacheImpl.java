@@ -18,8 +18,7 @@ public class BlockingCacheImpl<T> implements BlockingCache<T> {
 
     @Override
     public void run(Consumer<T> handler) {
-        while (true)
-        {
+        while (true) {
             try {
                 var item = blockingQueue.take();
                 handler.accept(item);
