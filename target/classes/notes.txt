@@ -2,7 +2,8 @@ Todo
 - Tests - Done
 - Wire up Odbc database - Done
 - Wire up the appsettings - Done
-- Admin - clear cache
+- Admin - clear cache - Done
+- Env wise configuration - Done
 - Use test settings for test
 
 
@@ -10,6 +11,12 @@ Todo
 - Indexing
 - Async
 
+docker build -t your-image-name:your-tag .
+
+docker build -t datastore:v1.1 .
+
+docker run -p 8080:8080 datastore:v1.0 .
+docker run -p 8080:8080 my-spring-boot-app
 
 CREATE TABLE "Users" (
 	"username"	TEXT,
