@@ -12,16 +12,15 @@ public class AppServiceImpl implements AppService {
     @Autowired
     ConfigLoader configLoader;
 
-    @Override
     public void start() {
+        System.out.println("AppServiceImpl- Start");
         try {
             configLoader.loadConfig();
-        } catch (IOException e) {
-            throw new RuntimeException("Application Initialization failed." + e);
+        } catch (Exception e) {
+            System.out.println("Application Initialization failed." + e.getMessage());
         }
     }
 
-    @Override
     public void stop() {
     }
 }

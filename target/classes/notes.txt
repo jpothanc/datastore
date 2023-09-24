@@ -13,10 +13,15 @@ Todo
 
 docker build -t your-image-name:your-tag .
 
-docker build -t datastore:v1.1 .
+docker build -t datastore:v1.7 .
 
 docker run -p 8080:8080 datastore:v1.0 .
 docker run -p 8080:8080 my-spring-boot-app
+
+docker run -p 8007:8007 datastore:v1.6 .
+
+
+docker build -t orderstore:v1.0 .
 
 CREATE TABLE "Users" (
 	"username"	TEXT,

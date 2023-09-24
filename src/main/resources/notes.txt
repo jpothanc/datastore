@@ -12,11 +12,19 @@ Todo
 - Async
 
 docker build -t your-image-name:your-tag .
+docker build -t jpothanc/datastore
+docker run -p 8007:800y jpothanc/datastore
 
-docker build -t datastore:v1.1 .
+java - jar  datastore-0.0.1-SNAPSHOT.jar
+//contents inside the jar
+jar -tf  datastore-0.0.1-SNAPSHOT.jar
 
-docker run -p 8080:8080 datastore:v1.0 .
-docker run -p 8080:8080 my-spring-boot-app
+
+
+
+
+
+
 
 CREATE TABLE "Users" (
 	"username"	TEXT,

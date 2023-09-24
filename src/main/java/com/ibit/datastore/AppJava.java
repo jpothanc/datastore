@@ -22,11 +22,11 @@ public class AppJava implements ApplicationContextAware {
         System.out.println("Spring Start");
         logger.info("Spring Start.");
 
-        AppService cf = applicationContext.getBean(AppService.class);
+        AppService appService = applicationContext.getBean(AppService.class);
         System.out.println("App Service Starting");
         logger.info("App Service Starting.");
-        cf.start();
-        System.out.println("App Service Started");
+        appService.start();
+        System.out.println("App Service Started1");
         logger.info("App Service Started.");
     }
 

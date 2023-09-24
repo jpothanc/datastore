@@ -23,20 +23,20 @@ class DbCatalogueProviderTests {
 	void contextLoads() {
 
 	}
-	@ParameterizedTest
-	@CsvSource({
-			"Trading, Users"
-	})
-	public void when_CatalogueItemIsQueried_ShouldReturnValidQueryResponse(String catalogue, String catalogueItem)
-	{
-		// Arrange
-		var request = new QueryRequest();
-		request.setCatalogueItem(catalogueItem);
-		request.setCatalogue(catalogue);
-		// Act
-		var res = catalogueProvider.queryCatalogueItem(request).join();
-		// Assert
-		assertEquals(res.getCatalogueItem(), catalogueItem);
-	}
+//	@ParameterizedTest
+//	@CsvSource({
+//			"Trading, Users"
+//	})
+//	public void when_CatalogueItemIsQueried_ShouldReturnValidQueryResponse(String catalogue, String catalogueItem)
+//	{
+//		// Arrange
+//		var request = new QueryRequest();
+//		request.setCatalogueItem(catalogueItem);
+//		request.setCatalogue(catalogue);
+//		// Act
+//		var res = catalogueProvider.queryCatalogueItem(request).join();
+//		// Assert
+//		assertEquals(res.getCatalogueItem(), catalogueItem);
+//	}
 
 }

@@ -27,7 +27,6 @@ public class CatalogueServiceImpl implements CatalogueService {
     CatalogueProvider queryService;
     @Autowired
     AppConfig appConfig;
-
     @Autowired
     ProviderFactory providerFactory;
 

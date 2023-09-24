@@ -6,6 +6,12 @@
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
+    <appender name="fileAppender" class="ch.qos.logback.core.FileAppender">
+        <file>c://temp/datastore.log </file><!-- Specify your desired log file path here -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
 
     <!-- Loggers -->
     <root level="info">

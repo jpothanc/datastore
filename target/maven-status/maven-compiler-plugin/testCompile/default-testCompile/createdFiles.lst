@@ -1,1 +1,9 @@
-com\jpothanc\crossfinder\CrossfinderApplicationTests.class
+com\ibit\datastore\datastore\DataStoreControllerTests.class
+com\ibit\datastore\datastore\BaseTest$2.class
+com\ibit\datastore\datastore\BaseTest$5.class
+com\ibit\datastore\datastore\BaseTest.class
+com\ibit\datastore\datastore\BaseTest$4.class
+com\ibit\datastore\datastore\BaseTest$3.class
+com\ibit\datastore\datastore\DbCatalogueProviderTests.class
+com\ibit\datastore\datastore\BaseTest$1.class
+com\ibit\datastore\datastore\TestAppSettings.class

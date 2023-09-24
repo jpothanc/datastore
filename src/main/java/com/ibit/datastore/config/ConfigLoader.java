@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,22 +21,22 @@ public class ConfigLoader {
     AppConfig appConfig;
 
     private final Environment environment;
+    private final ResourceLoader resourceLoader;
+    private final ObjectMapper objectMapper;
 
-    public ConfigLoader(Environment environment) {
+    public ConfigLoader(Environment environment,ResourceLoader resourceLoader, ObjectMapper objectMapper) {
         this.environment = environment;
+        this.resourceLoader = resourceLoader;
+        this.objectMapper = objectMapper;
     }
 
     public void loadConfig() throws IOException {
         System.out.println("Active profile : " + activeProfile);
-        String configFile = "appsettings-" + activeProfile + ".json";
-        var url = AppConfig.class.getClassLoader().getResource(configFile);
-
-        if (url == null)
-            url = AppConfig.class.getClassLoader().getResource("appsettings.json");
-        System.out.println("Loading configuration : " + url);
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectMapper objectMapper = new ObjectMapper();
-        var localConfig = objectMapper.readValue(new File(url.getPath()), AppConfig.class);
+        String configFile = "classpath:appsettings-" + activeProfile + ".json";
+        Resource resource = resourceLoader.getResource(configFile);
+        System.out.println("resource loaded");
+        var localConfig = objectMapper.readValue(resource.getInputStream(), AppConfig.class);
+        System.out.println("resource parsed" + localConfig.getCatalogues());
         override(localConfig);
     }
 
