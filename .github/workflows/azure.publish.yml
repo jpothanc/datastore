@@ -21,7 +21,7 @@ jobs:
         run: mvn clean package
 
       - name: Upload JAR file to Azure
-        uses: Azure/webapps-deploy@v4
+        uses: azure/webapps-deploy@v2
         with:
           app-name: data-store
           package: target/datastore-0.0.1-SNAPSHOT.jar
