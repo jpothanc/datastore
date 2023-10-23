@@ -12,16 +12,24 @@ Todo
 - Async
 
 docker build -t your-image-name:your-tag .
+docker build -t jpothanc/datastore
+docker run -p 8007:800y jpothanc/datastore
 
-docker build -t datastore:v1.7 .
+java - jar  datastore-0.0.1-SNAPSHOT.jar
+//contents inside the jar
+jar -tf  datastore-0.0.1-SNAPSHOT.jar
 
-docker run -p 8080:8080 datastore:v1.0 .
-docker run -p 8080:8080 my-spring-boot-app
+datastore>docker build -t datastore:2.0 .
+docker tag datastore:2.0 kaljessy/datastore:2.0
+docker push kaljessy/datastore:2.0
 
-docker run -p 8007:8007 datastore:v1.6 .
 
 
-docker build -t orderstore:v1.0 .
+ "connectionString": "jdbc:postgresql://localhost:5432/test",
+      "username": "postgres",
+      "password": "admin",
+
+
 
 CREATE TABLE "Users" (
 	"username"	TEXT,
@@ -34,3 +42,40 @@ CREATE TABLE "Users" (
 	PRIMARY KEY("username")
 )
 INSERT into Users VALUES('jpothanc','Jessish Pothancheri','HKNJADL',0,1,'','20231609');
+
+CREATE TABLE Users (
+	username	TEXT,
+	fullname	TEXT,
+	desk	TEXT,
+	retired	INTEGER,
+	poweruser	INTEGER,
+	comments	TEXT,
+	datecreated	TEXT,
+	PRIMARY KEY(username)
+)
+
+INSERT into Users VALUES('jryan','Jack Ryan','HKDEALING',0,1,'','20231609');
+INSERT into Users VALUES('ppan','Peter Pan','TKSALES',0,1,'','20231609');
+INSERT into Users VALUES('rverma','Raj Verma','TKDEALING',0,1,'','20231609');
+INSERT into Users VALUES('pscott','Philip Scott','SYSALES',0,1,'','20231609');
+
+
+CREATE TABLE Desks (
+	deskname	TEXT,
+	description	TEXT,
+	country	TEXT,
+	defaultuser	TEXT,
+	readonly	INTEGER,
+	contact	    TEXT,
+	comments	TEXT,
+	datecreated	TEXT,
+	PRIMARY KEY(deskname)
+)
+
+
+INSERT into Desks VALUES('HKDEALING','HK Dealing Desk','HKG','jryan','0','support','','20232310');
+
+INSERT into Desks VALUES('TKSALES','HK Sales Desk','TYO','ppan','0','tk support','','20232310');
+
+INSERT into Desks VALUES('TKDEALING','TK Dealing Desk','TYO','rverma','0','tk support','','20232310');
+INSERT into Desks VALUES('SYSALES','Australia Sales Desk','AUS','pscott','0','au support','','20232310');
