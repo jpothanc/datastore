@@ -18,29 +18,42 @@ The application significantly improves response times by intelligently caching f
 ### Catalogue Structure
 
 The catalogue orchestrates database queries and their caching behaviors through a detailed yet flexible structure. Here's an illustrative configuration:
+```json
+{
+    "catalogue" : {
+      "trading" : {
+        "omanUsers" : {
+          "datasource" : "RefData",
+          "query" : "select * from OmanUsers where retired != 1",
+          "preload" : true,
+          "indexes" : "username",
+          "health": "select * from OmanUsers where 1 = 2"
+        },
+        "omanDesks" : {
+          "datasource" : "RefData",
+          "query" : "select * from OmanDesks",
+          "preload" : false,
+          "indexes" : "",
+          "health": "select * from OmanDesks where 1 = 2"
+        }
+      },
+      "products" : {
+        "stock" : {
+          "datasource" : "ProdData",
+          "query" : "select * from v_equities where exchange = {0}",
+          "preload" : true,
+          "indexes" : "",
+          "health": "select * from v_equities where 1 = 2"
+        },
+        "restricted" : {
+          "datasource" : "ProdData",
+          "query" : "select * from v_restricted",
+          "preload" : true,
+          "indexes" : "",
+          "health": "select * from v_restricted where 1 = 2"
+        }
+      }
+    }
+}
+```
 
-- `trading`
-  - `omanUsers`
-    - `datasource`: RefData
-    - `query`: select * from OmanUsers where retired != 1
-    - `preload`: true
-    - `indexes`: username
-    - `health`: select * from OmanUsers where 1 = 2
-  - `omanDesks`
-    - `datasource`: RefData
-    - `query`: select * from OmanDesks
-    - `preload`: false
-    - `indexes`: 
-    - `health`: select * from OmanDesks where 1 = 2
-
-- `products`
-  - `stock`
-    - `datasource`: ProdData
-    - `query`: select * from v_equities where exchange = {0}
-    - `preload`: true
-    - `indexes`: 
-    - `health`: select * from v_equities where 1 = 2
-  - `restricted`
-    - `datasource`: ProdData
-    - `query`: select * from v_restricted
-    - `preload`: true
