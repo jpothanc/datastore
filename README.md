@@ -24,33 +24,33 @@ The catalogue orchestrates database queries and their caching behaviors through 
       "trading" : {
         "omanUsers" : {
           "datasource" : "RefData",
-          "query" : "select * from OmanUsers where retired != 1",
+          "query" : "select * from Users where retired != 1",
           "preload" : true,
           "indexes" : "username",
-          "health": "select * from OmanUsers where 1 = 2"
+          "health": "select * from Users where 1 = 2"
         },
         "omanDesks" : {
           "datasource" : "RefData",
-          "query" : "select * from OmanDesks",
+          "query" : "select * from Desks",
           "preload" : false,
           "indexes" : "",
-          "health": "select * from OmanDesks where 1 = 2"
+          "health": "select * from Desks where 1 = 2"
         }
       },
       "products" : {
         "stock" : {
           "datasource" : "ProdData",
-          "query" : "select * from v_equities where exchange = {0}",
+          "query" : "select * from equities where exchange = {0}",
           "preload" : true,
           "indexes" : "",
-          "health": "select * from v_equities where 1 = 2"
+          "health": "select * from equities where 1 = 2"
         },
         "restricted" : {
           "datasource" : "ProdData",
-          "query" : "select * from v_restricted",
+          "query" : "select * from restricted",
           "preload" : true,
           "indexes" : "",
-          "health": "select * from v_restricted where 1 = 2"
+          "health": "select * from restricted where 1 = 2"
         }
       }
     }
