@@ -22,14 +22,14 @@ The catalogue orchestrates database queries and their caching behaviors through 
 {
     "catalogue" : {
       "trading" : {
-        "omanUsers" : {
+        "Users" : {
           "datasource" : "RefData",
           "query" : "select * from Users where retired != 1",
           "preload" : true,
           "indexes" : "username",
           "health": "select * from Users where 1 = 2"
         },
-        "omanDesks" : {
+        "Desks" : {
           "datasource" : "RefData",
           "query" : "select * from Desks",
           "preload" : false,
