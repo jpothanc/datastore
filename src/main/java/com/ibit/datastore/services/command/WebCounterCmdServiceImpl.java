@@ -4,6 +4,11 @@ import com.ibit.datastore.repositories.WebCounterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import static com.ibit.datastore.helpers.CatalogueHelper.formattedTimeStamp;
+
 @Service
 public class WebCounterCmdServiceImpl implements WebCounterCmdService {
     private final WebCounterRepository webCounterRepository;
@@ -22,6 +27,8 @@ public class WebCounterCmdServiceImpl implements WebCounterCmdService {
     public void incrementCounter(String siteName) {
         var webCounter = webCounterRepository.findById(siteName).get();
         webCounter.setCounter(webCounter.getCounter() + 1);
+        webCounter.setModified_by("datastore");
+        webCounter.setModified_date(formattedTimeStamp());
         webCounterRepository.save(webCounter);
     }
 }
