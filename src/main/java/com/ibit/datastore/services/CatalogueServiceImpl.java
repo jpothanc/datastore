@@ -6,8 +6,8 @@ import com.ibit.datastore.factory.ProviderFactory;
 import com.ibit.datastore.models.CatalogueItem;
 import com.ibit.datastore.models.QueryRequest;
 import com.ibit.datastore.models.QueryResponse;
+import com.ibit.datastore.services.providers.CatalogueProvider;
 import io.swagger.annotations.Scope;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -21,21 +21,25 @@ import static com.ibit.datastore.helpers.Constants.CATALOGUE_SOURCE_CACHED;
 @Scope(name = "prototype", description = "CatalogueServiceImpl")
 public class CatalogueServiceImpl implements CatalogueService {
 
-    @Autowired
-    MemoryCache memoryCache;
-    @Autowired
-    CatalogueProvider queryService;
-    @Autowired
-    AppConfig appConfig;
-    @Autowired
-    ProviderFactory providerFactory;
+
+    private final MemoryCache memoryCache;
+    private final CatalogueProvider queryService;
+    private final AppConfig appConfig;
+    private final ProviderFactory providerFactory;
+
+    public CatalogueServiceImpl(MemoryCache memoryCache, CatalogueProvider queryService,
+                                AppConfig appConfig, ProviderFactory providerFactory) {
+        this.memoryCache = memoryCache;
+        this.queryService = queryService;
+        this.appConfig = appConfig;
+        this.providerFactory = providerFactory;
+    }
 
     @Override
     public CompletableFuture<QueryResponse> queryCatalogueItem(QueryRequest request) {
 
         var cItem = appConfig.getCatalogueItem(request.getCatalogue(), request.getCatalogueItem());
-        if (cItem == null)
-            throw new NoSuchElementException(CATALOGUE_NOT_FOUND);
+        if (cItem == null) throw new NoSuchElementException(CATALOGUE_NOT_FOUND);
 
         if (request.getQueryArgs() != null && request.getQueryArgs().length > 0) {
             var query = String.format(cItem.getQuery(), request.getQueryArgs());
@@ -44,17 +48,22 @@ public class CatalogueServiceImpl implements CatalogueService {
         request.setCatalogueItemInstance(cItem);
 
         var provider = providerFactory.getCatalogueProvider(request);
-        return request.isSkipCache() ?
-                getResponse(cItem, () -> provider.get().queryCatalogueItem(request)) :
-                getCachedResponse(cItem, () -> provider.get().queryCatalogueItem(request));
+        return request.isSkipCache() ? getResponse(cItem, () -> provider.get().queryCatalogueItem(request))
+                : getCachedResponse(cItem, () -> provider.get().queryCatalogueItem(request));
 
+    }
+    @Override
+    public CompletableFuture<QueryResponse> queryCatalogueItem(String cacheKey) {
+        var response = memoryCache.get(cacheKey);
+        if(response == null) throw new NoSuchElementException(CATALOGUE_NOT_FOUND);
+        response.setSource(CATALOGUE_SOURCE_CACHED);
+        return CompletableFuture.completedFuture(response.clone());
     }
 
     @Override
     public void clearCatalogue(String catalogue, String catalogueItem) {
         var cItem = appConfig.getCatalogueItem(catalogue, catalogueItem);
-        if (cItem == null)
-            throw new NoSuchElementException(CATALOGUE_NOT_FOUND);
+        if (cItem == null) throw new NoSuchElementException(CATALOGUE_NOT_FOUND);
 
         memoryCache.remove(cItem.getCacheKey());
     }

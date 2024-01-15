@@ -1,7 +1,7 @@
 package com.ibit.datastore.factory;
 
 import com.ibit.datastore.models.QueryRequest;
-import com.ibit.datastore.services.CatalogueProvider;
+import com.ibit.datastore.services.providers.CatalogueProvider;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,6 +26,7 @@ public class ProviderFactoryImpl implements ProviderFactory {
         if (provider.isPresent())
             return provider;
 
+        //by default use database provider.
         return providers.stream().filter(x -> x.getName().toString() == Database.toString()).findFirst();
     }
 

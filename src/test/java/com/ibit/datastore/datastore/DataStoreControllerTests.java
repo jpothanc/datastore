@@ -49,7 +49,7 @@ class DataStoreControllerTests extends BaseTest{
                 .uri("/api/v1/data/")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus().isOk()                                  
                 .expectBody(String.class)
                 .isEqualTo("DataStore");
     }
@@ -146,6 +146,51 @@ class DataStoreControllerTests extends BaseTest{
                 .consumeWith(response -> {
                     QueryResponse res = response.getResponseBody();
                     assertEquals(res.getSource(), CATALOGUE_SOURCE_CACHED);
+                });
+    }
+
+    @Test
+    public void when_CatalogueItemIsCachedAndQueriedUsingCacheKey_ShouldReturnCatalogueItem() {
+        var request = getQueryRequest();
+        clearCache(request);
+        var api = String.format(DATASTORE_API, request.getCatalogue(), request.getCatalogueItem());
+        webTestClient.get()
+                .uri(api)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(QueryResponse.class)
+                .consumeWith(response -> {
+                    QueryResponse res = response.getResponseBody();
+                    assertEquals(res.getSource(), CATALOGUE_SOURCE_QUERY);
+                });
+
+        var cacheKey = getCatalogueItem(request).getCacheKey();
+        api = String.format(DATASTORE_CACHED_API,cacheKey);
+        webTestClient.get()
+                .uri(api)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(QueryResponse.class)
+                .consumeWith(response -> {
+                    QueryResponse res = response.getResponseBody();
+                    assertEquals(res.getSource(), CATALOGUE_SOURCE_CACHED);
+                });
+    }
+
+    @Test
+    public void when_CatalogueItemIsNotCachedAndQueriedUsingCacheKey_ShouldReturnError() {
+        var request = getQueryRequest();
+        clearCache(request);
+        var cacheKey = getCatalogueItem(request).getCacheKey();
+        var api = String.format(DATASTORE_CACHED_API,cacheKey);
+        webTestClient.get()
+                .uri(api)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(QueryResponse.class)
+                .consumeWith(response -> {
+                    QueryResponse res = response.getResponseBody();
+                    assertEquals(res.getError(), "Catalogue Item not found");
                 });
     }
 }

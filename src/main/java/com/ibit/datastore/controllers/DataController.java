@@ -40,5 +40,19 @@ public class DataController {
             return Mono.just(QueryResponse.badRequest(request, e.getMessage(), HttpStatus.BAD_REQUEST));
         }
     }
+    @GetMapping("/queryCached")
+    public Mono<ResponseEntity<QueryResponse>> getCatalogueItem(@RequestParam String cacheKey) {
+
+            try {
+                var response = catalogueService.queryCatalogueItem(cacheKey).join();
+                return Mono.just(ResponseEntity.ok(response));
+
+            } catch (NoSuchElementException e) {
+                return Mono.just(QueryResponse.notFound(cacheKey, e.getMessage(), HttpStatus.NOT_FOUND));
+
+            } catch (Exception e) {
+                return Mono.just(QueryResponse.badRequest(cacheKey, e.getMessage(), HttpStatus.BAD_REQUEST));
+            }
+    }
 }
 

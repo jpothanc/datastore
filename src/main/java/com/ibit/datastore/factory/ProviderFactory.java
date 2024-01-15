@@ -1,7 +1,7 @@
 package com.ibit.datastore.factory;
 
 import com.ibit.datastore.models.QueryRequest;
-import com.ibit.datastore.services.CatalogueProvider;
+import com.ibit.datastore.services.providers.CatalogueProvider;
 
 import java.util.Optional;
 

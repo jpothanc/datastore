@@ -3,6 +3,7 @@ package com.ibit.common.database;
 import com.ibit.common.database.models.DataRow;
 import com.ibit.common.database.models.DbRequest;
 import com.ibit.common.database.models.DbResponse;
+import io.swagger.annotations.Scope;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
@@ -10,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-
+@Scope(name = "prototype", description = "")
 public class DatabaseServiceImpl implements DatabaseService {
 
     public DbResponse Query(DbRequest request) {

@@ -1,4 +1,4 @@
-package com.ibit.datastore.services;
+package com.ibit.datastore.services.providers;
 
 import com.ibit.common.database.DatabaseService;
 import com.ibit.common.database.DatabaseServiceImpl;
@@ -19,8 +19,12 @@ public class DbCatalogueProviderImpl implements CatalogueProvider {
 
     //    @Autowired
 //    DatabaseService databaseService;
-    @Autowired
-    AppConfig appSettings;
+
+    private final AppConfig appSettings;
+
+    public DbCatalogueProviderImpl(AppConfig appSettings) {
+        this.appSettings = appSettings;
+    }
 
     @Override
     public CatalogueProviders getName() {

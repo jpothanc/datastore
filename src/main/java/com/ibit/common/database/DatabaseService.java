@@ -4,7 +4,6 @@ import com.ibit.common.database.models.DbRequest;
 import com.ibit.common.database.models.DbResponse;
 import org.springframework.stereotype.Service;
 
-@Service
 public interface DatabaseService {
     DbResponse Query(DbRequest request);
 }

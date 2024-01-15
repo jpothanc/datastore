@@ -64,22 +64,36 @@ public class QueryResponse {
     }
 
     public static QueryResponse createOkResponse(QueryRequest request) {
-        return generateResponse(request, "", HttpStatus.OK);
+
+        var catalogueKey =  getCatalogueKey(request.getCatalogue(), request.getCatalogueItem());
+        return generateResponse(catalogueKey, "", HttpStatus.OK);
     }
 
     public static ResponseEntity<QueryResponse> notFound(QueryRequest request, String errorMessage, HttpStatusCode statusCode) {
 
-        return new ResponseEntity<>(generateResponse(request, errorMessage, HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
+        var catalogueKey =  getCatalogueKey(request.getCatalogue(), request.getCatalogueItem());
+        return notFound(catalogueKey, errorMessage, HttpStatus.NOT_FOUND);
     }
 
     public static ResponseEntity<QueryResponse> badRequest(QueryRequest request, String errorMessage, HttpStatusCode statusCode) {
 
-        return new ResponseEntity<>(generateResponse(request, errorMessage, HttpStatus.BAD_REQUEST), HttpStatus.NOT_FOUND);
+        var catalogueKey =  getCatalogueKey(request.getCatalogue(), request.getCatalogueItem());
+        return notFound(catalogueKey, errorMessage, HttpStatus.BAD_REQUEST);
     }
 
-    private static QueryResponse generateResponse(QueryRequest request, String errorMessage, HttpStatusCode statusCode) {
+    public static ResponseEntity<QueryResponse> notFound(String catalogueKey, String errorMessage, HttpStatusCode statusCode) {
+
+        return new ResponseEntity<>(generateResponse(catalogueKey, errorMessage, HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
+    }
+
+    public static ResponseEntity<QueryResponse> badRequest(String catalogueKey, String errorMessage, HttpStatusCode statusCode) {
+
+        return new ResponseEntity<>(generateResponse(catalogueKey, errorMessage, HttpStatus.BAD_REQUEST), HttpStatus.NOT_FOUND);
+    }
+
+    private static QueryResponse generateResponse(String catalogueKey, String errorMessage, HttpStatusCode statusCode) {
         var response = new QueryResponse();
-        response.setCatalogueItem(getCatalogueKey(request));
+        response.setCatalogueItem(catalogueKey);
         response.setError(errorMessage);
         response.setStatusCode(statusCode.toString());
         response.setTimeStamp(formattedTimeStamp());

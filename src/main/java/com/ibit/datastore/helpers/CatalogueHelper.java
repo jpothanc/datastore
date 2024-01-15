@@ -30,10 +30,11 @@ public class CatalogueHelper {
         return LocalDate.now().format(DateTimeFormatter.ofPattern(Constants.DAY_FORMAT)).toString();
     }
 
+
     public static String generateCacheKey(Object... params) {
         var keyBuilder = new StringBuilder("ds:").append(formattedDayStamp()).append(Constants.KEY_SEP);
         for (var arg : params) {
-            keyBuilder.append(arg.toString().toLowerCase());
+            keyBuilder.append(arg.toString().toLowerCase());  
             keyBuilder.append(Constants.KEY_SEP);
         }
         return keyBuilder.toString();

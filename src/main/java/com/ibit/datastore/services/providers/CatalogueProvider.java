@@ -1,4 +1,4 @@
-package com.ibit.datastore.services;
+package com.ibit.datastore.services.providers;
 
 import com.ibit.datastore.models.Enums.CatalogueProviders;
 import com.ibit.datastore.models.QueryRequest;
