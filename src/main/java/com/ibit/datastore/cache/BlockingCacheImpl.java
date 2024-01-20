@@ -2,6 +2,7 @@ package com.ibit.datastore.cache;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class BlockingCacheImpl<T> implements BlockingCache<T> {
@@ -17,16 +18,20 @@ public class BlockingCacheImpl<T> implements BlockingCache<T> {
     }
 
     @Override
-    public void run(Consumer<T> handler) {
-        while (true) {
-            try {
-                var item = blockingQueue.take();
-                handler.accept(item);
+    public void subscribe(Consumer<T> handler) {
+        CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+            while (true) {
+                try {
+                    System.out.println("Waiting for item");
+                    var item = blockingQueue.take();
+                    handler.accept(item);
+                    Thread.sleep(1);
 
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
-        }
+        });
 
     }
 }

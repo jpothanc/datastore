@@ -23,9 +23,9 @@ public class AdminController {
         return ResponseEntity.ok(appConfig.getCatalogues());
     }
 
-    @GetMapping("/clear/{catalogue}/{catalogueItem}")
-    public ResponseEntity<String> clearCache(@PathVariable String catalogue,
-                                             @PathVariable String catalogueItem) {
+    @GetMapping("/clearCache")
+    public ResponseEntity<String> clearCache(@RequestParam String catalogue,
+                                             @RequestParam String catalogueItem) {
 
         catalogueService.clearCatalogue(catalogue, catalogueItem);
         return ResponseEntity.ok("Success");

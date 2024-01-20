@@ -47,6 +47,8 @@ public class CatalogueServiceImpl implements CatalogueService {
         }
         request.setCatalogueItemInstance(cItem);
 
+        System.out.println("CatalogueServiceImpl.queryCatalogueItem: " + request);
+
         var provider = providerFactory.getCatalogueProvider(request);
         return request.isSkipCache() ? getResponse(cItem, () -> provider.get().queryCatalogueItem(request))
                 : getCachedResponse(cItem, () -> provider.get().queryCatalogueItem(request));

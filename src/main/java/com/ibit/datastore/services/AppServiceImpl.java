@@ -11,17 +11,21 @@ import java.io.IOException;
 public class AppServiceImpl implements AppService {
     @Autowired
     ConfigLoader configLoader;
+    @Autowired
+    NotificationService notificationService;
 
     public void start() {
         System.out.println("AppServiceImpl- Start");
         try {
             configLoader.loadConfig();
+            notificationService.start();
         } catch (Exception e) {
             System.out.println("Application Initialization failed." + e.getMessage());
         }
     }
 
     public void stop() {
+        notificationService.stop();
     }
 }
 
