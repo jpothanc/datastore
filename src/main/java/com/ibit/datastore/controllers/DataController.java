@@ -1,12 +1,17 @@
 package com.ibit.datastore.controllers;
 
+import com.ibit.datastore.helpers.Constants;
 import com.ibit.datastore.models.QueryRequest;
 import com.ibit.datastore.models.QueryResponse;
 import com.ibit.datastore.services.CatalogueServiceAsync;
 import com.ibit.datastore.services.CatalogueService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -21,6 +26,8 @@ public class DataController {
 
     CatalogueService catalogueService;
     CatalogueServiceAsync catalogueServiceAsync;
+
+    private static final Logger logger = LoggerFactory.getLogger(DataController.class);
 
     @Autowired
     public DataController(CatalogueService catalogueService, CatalogueServiceAsync catalogueServiceAsync) {
@@ -48,19 +55,20 @@ public class DataController {
             return Mono.just(QueryResponse.badRequest(request, e.getMessage(), HttpStatus.BAD_REQUEST));
         }
     }
+
     @GetMapping("/queryCached")
     public Mono<ResponseEntity<QueryResponse>> getCatalogueItem(@RequestParam String cacheKey) {
 
-            try {
-                var response = catalogueService.queryCatalogueItem(cacheKey).join();
-                return Mono.just(ResponseEntity.ok(response));
+        try {
+            var response = catalogueService.queryCatalogueItem(cacheKey).join();
+            return Mono.just(ResponseEntity.ok(response));
 
-            } catch (NoSuchElementException e) {
-                return Mono.just(QueryResponse.notFound(cacheKey, e.getMessage(), HttpStatus.NOT_FOUND));
+        } catch (NoSuchElementException e) {
+            return Mono.just(QueryResponse.notFound(cacheKey, e.getMessage(), HttpStatus.NOT_FOUND));
 
-            } catch (Exception e) {
-                return Mono.just(QueryResponse.badRequest(cacheKey, e.getMessage(), HttpStatus.BAD_REQUEST));
-            }
+        } catch (Exception e) {
+            return Mono.just(QueryResponse.badRequest(cacheKey, e.getMessage(), HttpStatus.BAD_REQUEST));
+        }
     }
 
     @GetMapping("/queryAsync")
@@ -75,6 +83,19 @@ public class DataController {
 
         } catch (Exception e) {
             return Mono.just(QueryResponse.badRequest(request, e.getMessage(), HttpStatus.BAD_REQUEST));
+        }
+    }
+    //"healthcheckWsEndpoint": "wss://healthcheck-ib.azurewebsites.net/ws-endpoint1",
+    //"healthcheckWsTopic": "/topic/healthCheck",
+    @MessageMapping(Constants.ASYNC_QUERY_SOCKET_INCOMING_MESSAGE)
+    @SendTo("/topic/queryAsync")
+    public QueryResponse queryAsyncResponse(QueryResponse queryResponse) {
+
+        try {
+            logger.info("Sending WebSocket Notification:" + queryResponse);
+            return queryResponse;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

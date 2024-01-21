@@ -8,5 +8,5 @@ import java.util.concurrent.CompletableFuture;
 
 public interface CatalogueServiceAsync {
     CompletableFuture<QueryResponse> queryCatalogueItem(QueryRequest request);
-    Observable<QueryResponse> subscribe();
+    Observable<QueryResponse> onQueryCompleted();
 }

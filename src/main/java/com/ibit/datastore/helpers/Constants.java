@@ -9,5 +9,7 @@ public class Constants {
     public static final String CATALOGUE_SOURCE_QUERY = "Query";
     public static final String CATALOGUE_SOURCE_CACHED = "Cached";
     public static final String QUERY_TYPE_REST = "rest";
+
+    public static final String ASYNC_QUERY_SOCKET_INCOMING_MESSAGE = "/sendQueryResponse";
 }
 

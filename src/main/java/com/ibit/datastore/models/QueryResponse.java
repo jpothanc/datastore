@@ -1,5 +1,6 @@
 package com.ibit.datastore.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.gson.JsonObject;
 import com.ibit.common.database.models.DataRow;
@@ -28,9 +29,11 @@ public class QueryResponse {
     private String timeStamp;
     private int records;
     private String statusCode;
+    @JsonIgnore
     private Map<Long, DataRow> data;
     private String source;
     private String cacheKey;
+    @JsonIgnore
     private List<JsonObject> result;
 
     public boolean hasValue() {

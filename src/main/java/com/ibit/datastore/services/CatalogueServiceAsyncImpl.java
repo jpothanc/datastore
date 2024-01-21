@@ -21,15 +21,16 @@ import static com.ibit.datastore.helpers.Constants.CATALOGUE_NOT_FOUND;
 
 @Service
 @Scope(name = "singleton", description = "AsyncCatalogueServiceImpl")
-public class CatalogueServiceImplAsync implements CatalogueServiceAsync, ApplicationContextAware {
+public class CatalogueServiceAsyncImpl implements CatalogueServiceAsync, ApplicationContextAware {
     BlockingCache<QueryRequest> queryRequests;
     private final AppConfig appConfig;
     private static ApplicationContext applicationContext;
+
     PublishSubject<QueryResponse> subject = PublishSubject.create();
 
 
     @Autowired
-    public CatalogueServiceImplAsync(AppConfig appConfig) {
+    public CatalogueServiceAsyncImpl(AppConfig appConfig) {
         this.appConfig = appConfig;
         queryRequests = new BlockingCacheImpl<QueryRequest>(100);
         queryRequests.subscribe((request) -> {
@@ -58,12 +59,13 @@ public class CatalogueServiceImplAsync implements CatalogueServiceAsync, Applica
     }
 
     @Override
-    public Observable<QueryResponse> subscribe() {
+    public Observable<QueryResponse> onQueryCompleted() {
        return subject;
     }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        CatalogueServiceImplAsync.applicationContext = applicationContext;
+        CatalogueServiceAsyncImpl.applicationContext = applicationContext;
     }
+
 }
