@@ -85,15 +85,31 @@ public class DataController {
             return Mono.just(QueryResponse.badRequest(request, e.getMessage(), HttpStatus.BAD_REQUEST));
         }
     }
-    //"healthcheckWsEndpoint": "wss://healthcheck-ib.azurewebsites.net/ws-endpoint1",
-    //"healthcheckWsTopic": "/topic/healthCheck",
-    @MessageMapping(Constants.ASYNC_QUERY_SOCKET_INCOMING_MESSAGE)
+
+    // Connect to the websockets using url and topic
+    //Url:"ws://LAPTOP-UMF83CB2:8007/ws-endpoint1"
+    //Topic: "/topic/queryAsync"
+    // Send a message to the websocket
+    // Message: {"catalogue":"catalogue1","catalogueItem":"catalogueItem1","queryArgs":["arg1","arg2"]}
+    // The response will be sent to the topic "/topic/queryAsync"
+    // The response will be of type QueryResponse
+    // Sample Function:
+    // function sendName() {
+    //     stompClient.publish({
+    //             destination: "/app/sendQueryResponse",
+    //             body: JSON.stringify(Message)
+    // });
+
+
+
+    @MessageMapping("/sendQueryResponse")
     @SendTo("/topic/queryAsync")
-    public QueryResponse queryAsyncResponse(QueryResponse queryResponse) {
+    public QueryResponse queryResponse(QueryRequest request) {
 
         try {
-            logger.info("Sending WebSocket Notification:" + queryResponse);
-            return queryResponse;
+            logger.info("Sending WebSocket Notification:" + request);
+            var response = catalogueServiceAsync.queryCatalogueItem(request).join();
+            return response;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

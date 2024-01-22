@@ -28,7 +28,7 @@ public class NotificationServiceImpl implements NotificationService, Application
                 .subscribeOn(Schedulers.newThread()).
                 subscribe((data) -> {
                     System.out.println("Observer 2: " + data);
-                    sendNotification(data);
+                    sendQueryResponse(data);
                 });
     }
     @Override
@@ -42,7 +42,7 @@ public class NotificationServiceImpl implements NotificationService, Application
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
-    public void sendNotification(QueryResponse queryResponse) {
+    public void sendQueryResponse(QueryResponse queryResponse) {
 
         System.out.println("Sending Notification: " + queryResponse.toString());
         messagingTemplate.convertAndSend("/topic/queryAsync", queryResponse);
