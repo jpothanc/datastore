@@ -24,7 +24,7 @@ public abstract class BaseTest {
 
     protected static final String DATASTORE_API = "/api/v1/data/query?catalogue=%s&catalogueItem=%s";
     protected static final String DATASTORE_CACHED_API = "/api/v1/data/queryCached?cacheKey=%s";
-    protected static final String DATASTORE_ADMIN_API = "/api/v1/admin/clear/%s/%s";
+    protected static final String DATASTORE_ADMIN_API = "/api/v1/admin/clearCache?catalogue=%s&catalogueItem=%s";
     static Stream<Object[]> getValidQueryRequest() {
         var req1 = new QueryRequest(){{
             setCatalogue("Trading");

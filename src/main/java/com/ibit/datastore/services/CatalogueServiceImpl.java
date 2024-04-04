@@ -84,7 +84,8 @@ public class CatalogueServiceImpl implements CatalogueService {
     }
 
     private CompletableFuture<QueryResponse> getResponse(CatalogueItem catalogueItem, Supplier<CompletableFuture<QueryResponse>> func) {
-        return func.get();
+        var response = func.get().join();
+        return CompletableFuture.completedFuture(response.clone());
     }
 
     public String getCacheKey(CatalogueItem catalogueItem) {

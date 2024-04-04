@@ -1,6 +1,7 @@
 package com.ibit.datastore.helpers;
 
 import com.ibit.datastore.models.QueryRequest;
+import org.jasypt.util.text.AES256TextEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
@@ -38,5 +39,19 @@ public class CatalogueHelper {
             keyBuilder.append(Constants.KEY_SEP);
         }
         return keyBuilder.toString();
+    }
+
+    public static String getPasswordEncryptionKey() {
+        return System.getenv(Constants.PASSWORD_ENCRYPTION_KEY);
+    }
+
+    public static String decryptPassword(String password, String encryptionKey) throws RuntimeException {
+        if (encryptionKey == null || encryptionKey == "")
+            throw new RuntimeException(Constants.PASSWORD_ENCRYPTION_KEY_ERROR_MSG);
+        AES256TextEncryptor encryptor = new AES256TextEncryptor();
+        encryptor.setPassword(encryptionKey);
+        if(password.startsWith("ENC"))
+            password = password.substring(3);
+        return encryptor.decrypt(password);
     }
 }

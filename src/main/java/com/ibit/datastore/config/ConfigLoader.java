@@ -1,6 +1,7 @@
 package com.ibit.datastore.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ibit.datastore.helpers.CatalogueHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -8,9 +9,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
-import java.io.File;
 import java.io.IOException;
 
+import static com.ibit.datastore.helpers.CatalogueHelper.decryptPassword;
 import static com.ibit.datastore.helpers.Constants.KEY_SEP;
 
 @Configuration
@@ -42,7 +43,15 @@ public class ConfigLoader {
 
     private void override(AppConfig localConfig) {
         appConfig.setCatalogues(localConfig.getCatalogues());
-        appConfig.setDataSources(localConfig.getDataSources());
+
+        var dataSources = localConfig.getDataSources();
+        for ( var value : dataSources.values()) {
+            if(value.getPassword() == null || value.getPassword() == "")
+                continue;
+            var password = decryptPassword(value.getPassword(), CatalogueHelper.getPasswordEncryptionKey());
+            value.setPassword(password);
+        }
+        appConfig.setDataSources(dataSources);
         setCatalogues();
     }
 
