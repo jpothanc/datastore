@@ -1,4 +1,6 @@
 name: Build and Deploy Java JAR file to Azure
+env:
+  MY_VAR: dev  
 
 on:
   push:
