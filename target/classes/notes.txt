@@ -13,7 +13,7 @@ Todo
 
 docker build -t your-image-name:your-tag .
 docker build -t jpothanc/datastore
-docker run -p 8007:800y jpothanc/datastore
+docker run -p 8007:8007 jpothanc/datastore
 
 java - jar  datastore-0.0.1-SNAPSHOT.jar
 //contents inside the jar

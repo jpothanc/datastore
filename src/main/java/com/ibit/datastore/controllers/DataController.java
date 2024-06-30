@@ -1,10 +1,9 @@
 package com.ibit.datastore.controllers;
 
-import com.ibit.datastore.helpers.Constants;
 import com.ibit.datastore.models.QueryRequest;
 import com.ibit.datastore.models.QueryResponse;
-import com.ibit.datastore.services.CatalogueServiceAsync;
 import com.ibit.datastore.services.CatalogueService;
+import com.ibit.datastore.services.CatalogueServiceAsync;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,46 +43,28 @@ public class DataController {
     @GetMapping("/query")
     public Mono<ResponseEntity<QueryResponse>> getCatalogueItem(@ModelAttribute QueryRequest request) {
 
-        try {
-            var response = catalogueService.queryCatalogueItem(request).join();
-            return Mono.just(ResponseEntity.ok(response));
-
-        } catch (NoSuchElementException e) {
-            return Mono.just(QueryResponse.notFound(request, e.getMessage(), HttpStatus.NOT_FOUND));
-
-        } catch (Exception e) {
-            return Mono.just(QueryResponse.badRequest(request, e.getMessage(), HttpStatus.BAD_REQUEST));
-        }
+        return Mono.fromFuture(() -> catalogueService.queryCatalogueItem(request))
+                .map(ResponseEntity::ok)
+                .onErrorResume(NoSuchElementException.class, e -> QueryResponse.notFound(request, e.getMessage(), HttpStatus.NOT_FOUND))
+                .onErrorResume(Exception.class, e -> QueryResponse.badRequest(request, e.getMessage(), HttpStatus.BAD_REQUEST));
     }
 
     @GetMapping("/queryCached")
     public Mono<ResponseEntity<QueryResponse>> getCatalogueItem(@RequestParam String cacheKey) {
 
-        try {
-            var response = catalogueService.queryCatalogueItem(cacheKey).join();
-            return Mono.just(ResponseEntity.ok(response));
-
-        } catch (NoSuchElementException e) {
-            return Mono.just(QueryResponse.notFound(cacheKey, e.getMessage(), HttpStatus.NOT_FOUND));
-
-        } catch (Exception e) {
-            return Mono.just(QueryResponse.badRequest(cacheKey, e.getMessage(), HttpStatus.BAD_REQUEST));
-        }
+        return Mono.fromFuture(() -> catalogueService.queryCatalogueItem(cacheKey))
+                .map(ResponseEntity::ok)
+                .onErrorResume(NoSuchElementException.class, e -> QueryResponse.notFound(cacheKey, e.getMessage(), HttpStatus.NOT_FOUND))
+                .onErrorResume(Exception.class, e -> QueryResponse.badRequest(cacheKey, e.getMessage(), HttpStatus.BAD_REQUEST));
     }
 
     @GetMapping("/queryAsync")
     public Mono<ResponseEntity<QueryResponse>> getCatalogueItemAsync(@ModelAttribute QueryRequest request) {
 
-        try {
-            var response = catalogueServiceAsync.queryCatalogueItem(request).join();
-            return Mono.just(ResponseEntity.ok(response));
-
-        } catch (NoSuchElementException e) {
-            return Mono.just(QueryResponse.notFound(request, e.getMessage(), HttpStatus.NOT_FOUND));
-
-        } catch (Exception e) {
-            return Mono.just(QueryResponse.badRequest(request, e.getMessage(), HttpStatus.BAD_REQUEST));
-        }
+        return Mono.fromFuture(() -> catalogueServiceAsync.queryCatalogueItem(request))
+                .map(ResponseEntity::ok)
+                .onErrorResume(NoSuchElementException.class, e -> QueryResponse.notFound(request, e.getMessage(), HttpStatus.NOT_FOUND))
+                .onErrorResume(Exception.class, e -> QueryResponse.badRequest(request, e.getMessage(), HttpStatus.BAD_REQUEST));
     }
 
     // Connect to the websockets using url and topic
@@ -99,8 +80,6 @@ public class DataController {
     //             destination: "/app/sendQueryResponse",
     //             body: JSON.stringify(Message)
     // });
-
-
 
     @MessageMapping("/sendQueryResponse")
     @SendTo("/topic/queryAsync")

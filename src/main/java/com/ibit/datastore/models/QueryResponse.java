@@ -11,6 +11,7 @@ import lombok.ToString;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,26 +73,26 @@ public class QueryResponse {
         return generateResponse(catalogueKey, "", HttpStatus.OK);
     }
 
-    public static ResponseEntity<QueryResponse> notFound(QueryRequest request, String errorMessage, HttpStatusCode statusCode) {
+    public static Mono<ResponseEntity<QueryResponse>> notFound(QueryRequest request, String errorMessage, HttpStatusCode statusCode) {
 
         var catalogueKey =  getCatalogueKey(request.getCatalogue(), request.getCatalogueItem());
         return notFound(catalogueKey, errorMessage, HttpStatus.NOT_FOUND);
     }
 
-    public static ResponseEntity<QueryResponse> badRequest(QueryRequest request, String errorMessage, HttpStatusCode statusCode) {
+    public static Mono<ResponseEntity<QueryResponse>> badRequest(QueryRequest request, String errorMessage, HttpStatusCode statusCode) {
 
         var catalogueKey =  getCatalogueKey(request.getCatalogue(), request.getCatalogueItem());
         return notFound(catalogueKey, errorMessage, HttpStatus.BAD_REQUEST);
     }
 
-    public static ResponseEntity<QueryResponse> notFound(String catalogueKey, String errorMessage, HttpStatusCode statusCode) {
+    public static Mono<ResponseEntity<QueryResponse>> notFound(String catalogueKey, String errorMessage, HttpStatusCode statusCode) {
 
-        return new ResponseEntity<>(generateResponse(catalogueKey, errorMessage, HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
+        return Mono.just(new ResponseEntity<>(generateResponse(catalogueKey, errorMessage, HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND));
     }
 
-    public static ResponseEntity<QueryResponse> badRequest(String catalogueKey, String errorMessage, HttpStatusCode statusCode) {
+    public static Mono<ResponseEntity<QueryResponse>> badRequest(String catalogueKey, String errorMessage, HttpStatusCode statusCode) {
 
-        return new ResponseEntity<>(generateResponse(catalogueKey, errorMessage, HttpStatus.BAD_REQUEST), HttpStatus.NOT_FOUND);
+        return Mono.just(new ResponseEntity<>(generateResponse(catalogueKey, errorMessage, HttpStatus.BAD_REQUEST), HttpStatus.NOT_FOUND));
     }
 
     private static QueryResponse generateResponse(String catalogueKey, String errorMessage, HttpStatusCode statusCode) {
