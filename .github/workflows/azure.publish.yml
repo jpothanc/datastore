@@ -1,4 +1,6 @@
 name: Build and Deploy Java JAR file to Azure
+env:
+  JASYPT_ENCRYPTOR_PASSWORD: ${{ secrets.JASYPT_ENCRYPTOR_PASSWORD }}
 
 on:
   push:
