@@ -4,8 +4,9 @@ import com.ibit.datastore.models.QueryRequest;
 import com.ibit.datastore.models.QueryResponse;
 import com.ibit.datastore.services.CatalogueService;
 import com.ibit.datastore.services.CatalogueServiceAsync;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +22,13 @@ import java.util.concurrent.ExecutionException;
 @RestController
 @RequestMapping("api/v1/data")
 @CrossOrigin(origins = "*")
+@Tag(name = "DataStore", description = "DataStore API")
 public class DataController {
 
     CatalogueService catalogueService;
     CatalogueServiceAsync catalogueServiceAsync;
 
-    private static final Logger logger = LoggerFactory.getLogger(DataController.class);
+   // private static final Logger logger = LoggerFactory.getLogger(DataController.class);
 
     @Autowired
     public DataController(CatalogueService catalogueService, CatalogueServiceAsync catalogueServiceAsync) {
@@ -86,7 +88,7 @@ public class DataController {
     public QueryResponse queryResponse(QueryRequest request) {
 
         try {
-            logger.info("Sending WebSocket Notification:" + request);
+          //  logger.info("Sending WebSocket Notification:" + request);
             var response = catalogueServiceAsync.queryCatalogueItem(request).join();
             return response;
         } catch (Exception e) {

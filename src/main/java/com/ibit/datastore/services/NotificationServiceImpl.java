@@ -2,17 +2,18 @@ package com.ibit.datastore.services;
 
 import com.ibit.datastore.models.QueryResponse;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import io.swagger.annotations.Scope;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Scope;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 @Service
-@Scope(name = "singleton", description = "NotificationServiceImpl")
+@Scope("singleton")
 public class NotificationServiceImpl implements NotificationService, ApplicationContextAware {
 
     ApplicationContext applicationContext;

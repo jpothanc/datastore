@@ -7,11 +7,11 @@ import com.ibit.datastore.models.QueryRequest;
 import com.ibit.datastore.models.QueryResponse;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.PublishSubject;
-import io.swagger.annotations.Scope;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import static com.ibit.datastore.helpers.Constants.CATALOGUE_NOT_FOUND;
 
 @Service
-@Scope(name = "singleton", description = "AsyncCatalogueServiceImpl")
+@Scope("singleton")
 public class CatalogueServiceAsyncImpl implements CatalogueServiceAsync, ApplicationContextAware {
     BlockingCache<QueryRequest> queryRequests;
     private final AppConfig appConfig;

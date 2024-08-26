@@ -7,7 +7,7 @@ import com.ibit.datastore.models.CatalogueItem;
 import com.ibit.datastore.models.QueryRequest;
 import com.ibit.datastore.models.QueryResponse;
 import com.ibit.datastore.services.providers.CatalogueProvider;
-import io.swagger.annotations.Scope;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -18,7 +18,7 @@ import static com.ibit.datastore.helpers.Constants.CATALOGUE_NOT_FOUND;
 import static com.ibit.datastore.helpers.Constants.CATALOGUE_SOURCE_CACHED;
 
 @Service
-@Scope(name = "prototype", description = "CatalogueServiceImpl")
+@Scope("prototype")
 public class CatalogueServiceImpl implements CatalogueService {
 
 

@@ -7,14 +7,13 @@ import com.ibit.datastore.config.AppConfig;
 import com.ibit.datastore.models.Enums.CatalogueProviders;
 import com.ibit.datastore.models.QueryRequest;
 import com.ibit.datastore.models.QueryResponse;
-import io.swagger.annotations.Scope;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
 
 @Service
-@Scope(name = "prototype", description = "")
+@Scope("prototype")
 public class DbCatalogueProviderImpl implements CatalogueProvider {
 
     //    @Autowired
