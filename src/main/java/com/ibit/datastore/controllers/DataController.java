@@ -7,6 +7,8 @@ import com.ibit.datastore.services.CatalogueServiceAsync;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +30,7 @@ public class DataController {
     CatalogueService catalogueService;
     CatalogueServiceAsync catalogueServiceAsync;
 
-   // private static final Logger logger = LoggerFactory.getLogger(DataController.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataController.class);
 
     @Autowired
     public DataController(CatalogueService catalogueService, CatalogueServiceAsync catalogueServiceAsync) {
@@ -39,6 +41,7 @@ public class DataController {
     @GetMapping("/")
     public Mono<ResponseEntity<String>> get() throws ExecutionException, InterruptedException {
 
+        logger.info("DataStore");
         return Mono.just(ResponseEntity.ok("DataStore"));
     }
 

@@ -1,11 +1,47 @@
 <configuration>
+
+    <!-- Console Appender -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+            <pattern>%date{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <root level="debug">
+    <!-- Rolling File Appender -->
+    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>c:/temp/logs/ds-all.log</file> <!-- This is the active file name -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover with date in file name -->
+            <fileNamePattern>lc:/temp/logs/ds-all-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Rolling File Appender -->
+    <appender name="CONTROLLER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>c:/temp/logs/ds-controller.log</file> <!-- This is the active file name -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover with date in file name -->
+            <fileNamePattern>c:/temp/logs/ds-controller-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+    <!-- Logger for com.example.package1 -->
+    <logger name="com.ibit.datastore.controllers" level="INFO" additivity="false">
+        <appender-ref ref="CONTROLLER"/>
+    </logger>
+
+    <!-- Root Logger -->
+    <root level="info">
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="ROLLING"/>
     </root>
 </configuration>

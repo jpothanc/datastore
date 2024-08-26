@@ -2,6 +2,8 @@ package com.ibit.datastore;
 
 import com.ibit.datastore.services.AppService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,13 +15,13 @@ import org.springframework.context.ApplicationContextAware;
 public class AppJava implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
-   // private static final Logger logger = LoggerFactory.getLogger(AppJava.class);
+    private static final Logger logger = LoggerFactory.getLogger(AppJava.class);
     public static void main(String[] args) {
 
         SpringApplication.run(AppJava.class, args);
 
         System.out.println("Spring Start");
-       // logger.info("Spring Start.");
+        logger.info("Spring Start.");
 
         AppService appService = applicationContext.getBean(AppService.class);
         System.out.println("App Service Starting");
