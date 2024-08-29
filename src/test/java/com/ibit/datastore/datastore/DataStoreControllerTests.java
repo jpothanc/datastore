@@ -13,27 +13,25 @@ package com.ibit.datastore.datastore;
 
 import com.ibit.datastore.models.QueryRequest;
 import com.ibit.datastore.models.QueryResponse;
-import com.ibit.datastore.services.AppService;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import org.junit.FixMethodOrder;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.reactive.server.WebTestClient;
+
+import java.util.concurrent.TimeUnit;
 
 import static com.ibit.datastore.helpers.CatalogueHelper.getCatalogueKey;
-import static com.ibit.datastore.helpers.Constants.CATALOGUE_SOURCE_CACHED;
-import static com.ibit.datastore.helpers.Constants.CATALOGUE_SOURCE_QUERY;
+import static com.ibit.datastore.helpers.Constants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
@@ -41,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureWebTestClient
 @TestPropertySource(locations = "classpath:appsettings.test.json")
 @FixMethodOrder(MethodSorters.JVM) //Disable parallel execution
-class DataStoreControllerTests extends BaseTest{
+class DataStoreControllerTests extends BaseTest {
 
     @Test
     public void when_DataControllerIsQueries_ShouldReturnValidResponse() {
@@ -49,11 +47,10 @@ class DataStoreControllerTests extends BaseTest{
                 .uri("/api/v1/data/")
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isOk()                                  
+                .expectStatus().isOk()
                 .expectBody(String.class)
                 .isEqualTo("DataStore");
     }
-
 
     @ParameterizedTest
     @MethodSource("getValidQueryRequest")
@@ -75,10 +72,11 @@ class DataStoreControllerTests extends BaseTest{
                     assertNotNull(res);
                     assertNull(res.getData());
                     //var res1 = res.getResult();
-                   // assertNotNull(res.getResult());
+                    // assertNotNull(res.getResult());
                     assertEquals(res.getCacheKey(), cacheKey);
                 });
     }
+
     @ParameterizedTest
     @MethodSource("getInValidQueryRequest")
     public void when_InValidCatalogueItemIsQueried_ShouldReturnValidQueryResponse(QueryRequest request) {
@@ -100,7 +98,7 @@ class DataStoreControllerTests extends BaseTest{
     }
 
     @Test
-      public void when_CatalogueItemIsQueriedTwice_ShouldReturnSourceAsCachedOnSecondCall() {
+    public void when_CatalogueItemIsQueriedTwice_ShouldReturnSourceAsCachedOnSecondCall() {
         var request = getQueryRequest();
         clearCache(request);
 
@@ -115,6 +113,15 @@ class DataStoreControllerTests extends BaseTest{
                     assertEquals(res.getSource(), CATALOGUE_SOURCE_QUERY);
                 });
 
+//        webTestClient.get().uri(api)
+//                .exchange()
+//                .expectStatus().isOk()
+//                .returnResult(QueryResponse.class)
+//                .getResponseBody() // Returns a Flux<QueryResponse>
+//                .doOnNext(item -> {
+//                    assertEquals(item.getSource(), CATALOGUE_SOURCE_QUERY);
+//                });
+
         webTestClient.get()
                 .uri(api)
                 .exchange()
@@ -127,9 +134,10 @@ class DataStoreControllerTests extends BaseTest{
     }
 
     @Test
-    public void when_CatalogueItemIsQueriedTwice_ShouldReturnSourceAsCachedOnSecondCall1() {
+    public void when_CatalogueItemIsQueriedAsync_ShouldReturnValidQueryResponse() {
         var request = getQueryRequest();
-        var api = String.format(DATASTORE_API, request.getCatalogue(), request.getCatalogueItem());
+        clearCache(request);
+        var api = String.format(DATASTORE_ASYNC_API, request.getCatalogue(), request.getCatalogueItem());
         webTestClient.get()
                 .uri(api)
                 .exchange()
@@ -137,20 +145,43 @@ class DataStoreControllerTests extends BaseTest{
                 .expectBody(QueryResponse.class)
                 .consumeWith(response -> {
                     QueryResponse res = response.getResponseBody();
-                    assertEquals(res.getSource(), CATALOGUE_SOURCE_QUERY);
-                });
-
-        webTestClient.get()
-                .uri(api)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(QueryResponse.class)
-                .consumeWith(response -> {
-                    QueryResponse res = response.getResponseBody();
-                    assertEquals(res.getSource(), CATALOGUE_SOURCE_CACHED);
+                    assertEquals(res.getSource(), CATALOGUE_SOURCE_ASYNC);
                 });
     }
 
+    @Test
+    public void when_CatalogueItemIsQueriedAsync_ShouldReturnValidQueryResponseAfterCertainTime() {
+        var request = getQueryRequest();
+        clearCache(request);
+        var api = String.format(DATASTORE_ASYNC_API, request.getCatalogue(), request.getCatalogueItem());
+        webTestClient.get()
+                .uri(api)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(QueryResponse.class)
+                .consumeWith(response -> {
+                    QueryResponse res = response.getResponseBody();
+                    assertEquals(res.getSource(), CATALOGUE_SOURCE_ASYNC);
+                });
+
+        DelaySeconds(2);
+
+        var cacheKey = getCatalogueItem(request).getCacheKey();
+        api = String.format(DATASTORE_CACHED_API, cacheKey);
+        webTestClient.get()
+                .uri(api)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(QueryResponse.class)
+                .consumeWith(response -> {
+                    QueryResponse res = response.getResponseBody();
+                    assertEquals(res.getStatusCode(), HttpStatus.OK.toString());
+                    assertEquals(res.getCatalogueItem(), getCatalogueKey(request));
+                    assertNotNull(res);
+                    assertNull(res.getData());
+                    assertEquals(res.getCacheKey(), cacheKey);
+                });
+    }
     @Test
     public void when_CatalogueItemIsCachedAndQueriedUsingCacheKey_ShouldReturnCatalogueItem() {
         var request = getQueryRequest();
@@ -167,7 +198,7 @@ class DataStoreControllerTests extends BaseTest{
                 });
 
         var cacheKey = getCatalogueItem(request).getCacheKey();
-        api = String.format(DATASTORE_CACHED_API,cacheKey);
+        api = String.format(DATASTORE_CACHED_API, cacheKey);
         webTestClient.get()
                 .uri(api)
                 .exchange()
@@ -184,7 +215,7 @@ class DataStoreControllerTests extends BaseTest{
         var request = getQueryRequest();
         clearCache(request);
         var cacheKey = getCatalogueItem(request).getCacheKey();
-        var api = String.format(DATASTORE_CACHED_API,cacheKey);
+        var api = String.format(DATASTORE_CACHED_API, cacheKey);
         webTestClient.get()
                 .uri(api)
                 .exchange()

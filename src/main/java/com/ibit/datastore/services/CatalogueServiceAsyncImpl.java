@@ -18,6 +18,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 
 import static com.ibit.datastore.helpers.Constants.CATALOGUE_NOT_FOUND;
+import static com.ibit.datastore.helpers.Constants.CATALOGUE_SOURCE_ASYNC;
 
 @Service
 @Scope("singleton")
@@ -54,7 +55,7 @@ public class CatalogueServiceAsyncImpl implements CatalogueServiceAsync, Applica
         queryRequests.add(request);
 
         QueryResponse response = QueryResponse.createOkResponse(request);
-        response.setSource("Async");
+        response.setSource(CATALOGUE_SOURCE_ASYNC);
         return CompletableFuture.completedFuture(response);
     }
 

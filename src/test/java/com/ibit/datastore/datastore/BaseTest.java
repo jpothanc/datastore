@@ -24,6 +24,7 @@ public abstract class BaseTest {
 
     protected static final String DATASTORE_API = "/api/v1/data/query?catalogue=%s&catalogueItem=%s";
     protected static final String DATASTORE_CACHED_API = "/api/v1/data/queryCached?cacheKey=%s";
+    protected static final String DATASTORE_ASYNC_API = "/api/v1/data/queryAsync?catalogue=%s&catalogueItem=%s";
     protected static final String DATASTORE_ADMIN_API = "/api/v1/admin/clearCache?catalogue=%s&catalogueItem=%s";
     static Stream<Object[]> getValidQueryRequest() {
         var req1 = new QueryRequest(){{
@@ -74,5 +75,13 @@ public abstract class BaseTest {
     }
     protected CatalogueItem getCatalogueItem(QueryRequest request){
         return appConfig.getCatalogueItem(request.getCatalogue(), request.getCatalogueItem());
+    }
+
+    protected void DelaySeconds(int seconds){
+        try {
+            Thread.sleep(seconds * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

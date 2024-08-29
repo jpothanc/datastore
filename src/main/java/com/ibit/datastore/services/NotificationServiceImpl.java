@@ -18,9 +18,12 @@ public class NotificationServiceImpl implements NotificationService, Application
 
     ApplicationContext applicationContext;
     Disposable disposable;
+    private SimpMessagingTemplate messagingTemplate;
 
     @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+    public NotificationServiceImpl(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
 
     @Override
     public void start() {

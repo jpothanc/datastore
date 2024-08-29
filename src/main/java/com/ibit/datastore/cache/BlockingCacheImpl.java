@@ -19,7 +19,7 @@ public class BlockingCacheImpl<T> implements BlockingCache<T> {
 
     @Override
     public void subscribe(Consumer<T> handler) {
-        CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+         CompletableFuture.supplyAsync(() -> {
             while (true) {
                 try {
                     System.out.println("Waiting for item");

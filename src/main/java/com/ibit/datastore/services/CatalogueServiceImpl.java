@@ -59,7 +59,7 @@ public class CatalogueServiceImpl implements CatalogueService {
         var response = memoryCache.get(cacheKey);
         if(response == null) throw new NoSuchElementException(CATALOGUE_NOT_FOUND);
         response.setSource(CATALOGUE_SOURCE_CACHED);
-        return CompletableFuture.completedFuture(response.clone());
+        return CompletableFuture.completedFuture(response.toResult());
     }
 
     @Override
@@ -80,12 +80,12 @@ public class CatalogueServiceImpl implements CatalogueService {
         } else {
             response.setSource(CATALOGUE_SOURCE_CACHED);
         }
-        return CompletableFuture.completedFuture(response.clone());
+        return CompletableFuture.completedFuture(response.toResult());
     }
 
     private CompletableFuture<QueryResponse> getResponse(CatalogueItem catalogueItem, Supplier<CompletableFuture<QueryResponse>> func) {
         var response = func.get().join();
-        return CompletableFuture.completedFuture(response.clone());
+        return CompletableFuture.completedFuture(response.toResult());
     }
 
     public String getCacheKey(CatalogueItem catalogueItem) {

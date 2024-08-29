@@ -29,7 +29,6 @@ public class DataController {
 
     CatalogueService catalogueService;
     CatalogueServiceAsync catalogueServiceAsync;
-
     private static final Logger logger = LoggerFactory.getLogger(DataController.class);
 
     @Autowired
