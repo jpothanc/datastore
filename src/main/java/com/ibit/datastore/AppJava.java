@@ -21,7 +21,7 @@ public class AppJava implements ApplicationContextAware {
         SpringApplication.run(AppJava.class, args);
 
         System.out.println("Spring Start");
-        logger.info("Spring Start.");
+      //  logger.info("Spring Start.");
 
         AppService appService = applicationContext.getBean(AppService.class);
         System.out.println("App Service Starting");
