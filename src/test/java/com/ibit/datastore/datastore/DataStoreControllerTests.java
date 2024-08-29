@@ -164,7 +164,7 @@ class DataStoreControllerTests extends BaseTest {
                     assertEquals(res.getSource(), CATALOGUE_SOURCE_ASYNC);
                 });
 
-        DelaySeconds(2);
+        DelaySeconds(5);
 
         var cacheKey = getCatalogueItem(request).getCacheKey();
         api = String.format(DATASTORE_CACHED_API, cacheKey);
