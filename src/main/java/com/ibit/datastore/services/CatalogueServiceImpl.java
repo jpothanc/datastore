@@ -18,7 +18,6 @@ import static com.ibit.datastore.helpers.Constants.CATALOGUE_NOT_FOUND;
 import static com.ibit.datastore.helpers.Constants.CATALOGUE_SOURCE_CACHED;
 
 @Service
-@Scope("prototype")
 public class CatalogueServiceImpl implements CatalogueService {
 
 

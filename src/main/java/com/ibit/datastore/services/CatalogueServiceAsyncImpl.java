@@ -21,7 +21,6 @@ import static com.ibit.datastore.helpers.Constants.CATALOGUE_NOT_FOUND;
 import static com.ibit.datastore.helpers.Constants.CATALOGUE_SOURCE_ASYNC;
 
 @Service
-@Scope("singleton")
 public class CatalogueServiceAsyncImpl implements CatalogueServiceAsync, ApplicationContextAware {
     BlockingCache<QueryRequest> queryRequests;
     private final AppConfig appConfig;

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 @Service
-@Scope("singleton")
 public class NotificationServiceImpl implements NotificationService, ApplicationContextAware {
 
     ApplicationContext applicationContext;
