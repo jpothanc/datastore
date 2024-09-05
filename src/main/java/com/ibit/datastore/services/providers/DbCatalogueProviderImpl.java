@@ -7,20 +7,21 @@ import com.ibit.datastore.config.AppConfig;
 import com.ibit.datastore.models.Enums.CatalogueProviders;
 import com.ibit.datastore.models.QueryRequest;
 import com.ibit.datastore.models.QueryResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
 
 @Service
-@Scope("prototype")
 public class DbCatalogueProviderImpl implements CatalogueProvider {
 
-    //    @Autowired
+//    @Autowired
 //    DatabaseService databaseService;
 
     private final AppConfig appSettings;
 
+    @Autowired
     public DbCatalogueProviderImpl(AppConfig appSettings) {
         this.appSettings = appSettings;
     }
@@ -43,6 +44,7 @@ public class DbCatalogueProviderImpl implements CatalogueProvider {
             setQuery(cItem.getQuery());
             setDatabaseSetting(dbSetting.get());
         }};
+        //This needs to be connection pool.
         DatabaseService databaseService = new DatabaseServiceImpl();
         var dbResponse = databaseService.Query(dbRequest);
         var qResponse = QueryResponse.createOkResponse(request);
